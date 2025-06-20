@@ -1,0 +1,165 @@
+{% extends 'common/layout.html' %}
+{% load static %}
+
+
+{% block content %}
+  
+    <main>
+      <!-- Hero Section -->
+      <section id="home" class="relative overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 py-40 text-white">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="grid md:grid-cols-3 gap-10 items-center relative z-10">
+            <!-- Hero Text -->
+            <div class="space-y-6 col-span-2">
+              <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+                Find Your <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">Dream Job</span> Today
+              </h1>
+              <p class="text-lg text-white/90">
+                Connect with top employers and discover opportunities that match your skills and aspirations. Your next career move starts here.
+              </p>
+              <!-- Search Bar -->
+              <div class="flex flex-col md:flex-row items-stretch bg-white text-gray-800 rounded-full shadow-lg p-2 space-y-2 md:space-y-0 md:space-x-2">
+                <div class="flex items-center w-full md:w-1/2 px-3">
+                  <i class="fas fa-search text-gray-400 mr-2"></i>
+                  <input type="text" placeholder="Job title, keywords, or company" class="w-full bg-transparent focus:outline-none" />
+                </div>
+                <div class="flex items-center w-full md:w-1/3 px-3">
+                  <i class="fas fa-map-marker-alt text-gray-400 mr-2"></i>
+                  <input type="text" placeholder="City or remote" class="w-full bg-transparent focus:outline-none" />
+                </div>
+                <button class="bg-gradient-to-r min-w-40 cursor-pointer from-blue-600 to-blue-500 text-white font-semibold px-6 py-3 rounded-full hover:shadow-lg transition-all">Search Jobs</button>
+              </div>
+              <!-- Stats -->
+              <div class="flex flex-wrap justify-start gap-8 pt-6">
+                <div class="text-center">
+                  <span class="block text-2xl font-bold text-white" data-count="50000">0</span>
+                  <p class="text-sm text-white/70">Active Jobs</p>
+                </div>
+                <div class="text-center">
+                  <span class="block text-2xl font-bold text-white" data-count="10000">0</span>
+                  <p class="text-sm text-white/70">Companies</p>
+                </div>
+                <div class="text-center">
+                  <span class="block text-2xl font-bold text-white" data-count="100000">0</span>
+                  <p class="text-sm text-white/70">Job Seekers</p>
+                </div>
+              </div>
+            </div>
+    
+            <!-- Hero Cards or Image Placeholder -->
+            <div class="relative h-96 text-black">
+              <div class="absolute top-10 left-10 bg-white rounded-xl p-6 shadow-lg animate-bounce duration-[5000s]">
+                <i class="fas fa-briefcase text-2xl text-blue-600 mb-2"></i>
+                <h3 class="font-semibold text-lg mb-1">Software Engineer</h3>
+                <p class="text-green-500 font-medium">$90k - $120k</p>
+              </div>
+             
+              <div class="absolute bottom-8 left-5 bg-white rounded-xl p-6 shadow-lg animate-bounce duration-[5000s]">
+                <i class="fas fa-chart-line text-2xl text-blue-600 mb-2"></i>
+                <h3 class="font-semibold text-lg mb-1">Financial Analyst</h3>
+                <p class="text-green-500 font-medium">$60k - $85k</p>
+              </div>
+            </div>
+          </div>
+    
+          <!-- Floating Shapes -->
+          <div class="absolute inset-0 -z-10">
+            <div class="absolute w-24 h-24 bg-white/10 rounded-full top-1/4 left-10 animate-[float_6s_ease-in-out_infinite]"></div>
+            <div class="absolute w-36 h-36 bg-white/10 rounded-full top-3/4 left-3/4 animate-[float_6s_ease-in-out_infinite] delay-200"></div>
+            <div class="absolute w-20 h-20 bg-white/10 rounded-full bottom-8 left-1/4 animate-[float_6s_ease-in-out_infinite] delay-400"></div>
+            <div class="absolute w-28 h-28 bg-white/10 rounded-full top-10 right-10 animate-[float_6s_ease-in-out_infinite] delay-100"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="bg-gray-50 py-20">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Why Choose CareerHub?</h2>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Discover the features that make us the preferred choice for job seekers and employers</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">
+        <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-3xl">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast & Easy Application</h3>
+        <p class="text-gray-600">Apply to multiple jobs with one click. Our streamlined process saves you time and effort.</p>
+      </div>
+      <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">
+        <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-3xl">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Top Companies</h3>
+        <p class="text-gray-600">Connect with industry-leading companies and startups looking for talented professionals.</p>
+      </div>
+      <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">
+        <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-3xl">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">AI-Powered Matching</h3>
+        <p class="text-gray-600">Our intelligent algorithm matches you with jobs that perfectly fit your skills and preferences.</p>
+      </div>
+    </div>
+  </div>
+      </section>
+  
+      <!-- Popular Categories -->
+<section class="bg-white py-20">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Popular Job Categories</h2>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Explore opportunities across various industries</p>
+    </div>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-laptop-code text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Technology</h3>
+        <p class="text-sm text-gray-500">15,240 jobs</p>
+      </div>
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-stethoscope text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Healthcare</h3>
+        <p class="text-sm text-gray-500">8,760 jobs</p>
+      </div>
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-chart-bar text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Finance</h3>
+        <p class="text-sm text-gray-500">5,430 jobs</p>
+      </div>
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-graduation-cap text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Education</h3>
+        <p class="text-sm text-gray-500">3,210 jobs</p>
+      </div>
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-paint-brush text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Design</h3>
+        <p class="text-sm text-gray-500">2,890 jobs</p>
+      </div>
+      <div class="bg-gray-50 hover:bg-white border hover:border-blue-600 p-6 rounded-xl text-center transition-all duration-300 shadow-sm hover:shadow-lg">
+        <i class="fas fa-bullhorn text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-800">Marketing</h3>
+        <p class="text-sm text-gray-500">4,560 jobs</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-gradient-to-r from-gray-900 to-gray-800 py-20 text-white text-center">
+  <div class="max-w-3xl mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Ready to Start Your Career Journey?</h2>
+    <p class="text-lg text-white/80 mb-8">Join thousands of professionals who found their dream jobs through CareerHub</p>
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+      <button class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 px-6 py-3 rounded-full font-semibold transition-all">Get Started</button>
+      <button class="border border-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-gray-900 transition-all">Learn More</button>
+    </div>
+  </div>
+</section>
+
+
+    </main>
+    
+{% endblock content %}

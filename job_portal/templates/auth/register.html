@@ -1,0 +1,84 @@
+{% extends 'common/auth-layout.html' %}
+
+{% block content %}
+<main class="min-h-screen flex items-center py-10 justify-center bg-gradient-to-br from-indigo-50 to-white">
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-2 w-full max-w-6xl mx-auto">
+    <!-- register form -->
+    <div class="p-8">
+      <h2 class="text-3xl font-semibold text-indigo-700 mb-2">Create Account</h2>
+      <p class="text-sm text-gray-500 mb-6">Join CareerHub and start your journey</p>
+      <form method="post" id="registerForm" class="space-y-5">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">First Name</label>
+            <input type="text" name="first_name" placeholder="First name" required
+              class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Last Name</label>
+            <input type="text" name="last_name" placeholder="Last name" required
+              class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Username</label>
+          <input type="email" name="username" placeholder="username" required
+            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>     
+
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Password</label>
+          <input type="password" id="password" name="password" placeholder="Password" required
+            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required
+            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1.5">I am a</label>
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="user_type" value="jobseeker" checked class="accent-indigo-600" />
+              <span>Job Seeker</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="user_type" value="employer" class="accent-indigo-600" />
+              <span>Employer</span>
+            </label>
+          </div>
+        </div>
+
+     
+        <button type="submit"
+          class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">Create Account</button>
+
+        <div class="text-center mt-6 text-sm text-gray-600">
+          Already have an account?
+          <a href="{% url 'login' %}" class="text-indigo-600 hover:underline">Sign In</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- right illustration -->
+    <div class="hidden lg:flex items-center justify-center bg-indigo-50 p-10">
+      <div class="space-y-6 max-w-md">
+        <h2 class="text-2xl font-semibold text-indigo-800">Start Your Career Journey</h2>
+        <p class="text-sm text-gray-600">
+          Join our community and unlock endless job opportunities tailored to you.
+        </p>
+        <ul class="space-y-3 text-sm text-gray-700">
+          <li class="flex items-center gap-2">Access to 50,000+ jobs</li>
+          <li class="flex items-center gap-2">AI-powered job matching</li>
+          <li class="flex items-center gap-2">Direct contact with employers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

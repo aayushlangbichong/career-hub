@@ -1,0 +1,29 @@
+<header class="header bg-white fixed w-full top-0 left-0 shadow z-50">
+  <div class="nav-container max-w-6xl mx-auto flex items-center justify-between py-4 px-4">
+    <div class="logo text-blue-600 font-bold text-2xl">
+      <i class="fas fa-briefcase mr-2"></i>CareerHub
+    </div>
+    <nav>
+      <ul class="nav-menu hidden md:flex space-x-6 font-medium">
+        <li><a href="#home" class="hover:text-blue-600 transition">Home</a></li>
+        <li><a href="#features" class="hover:text-blue-600 transition">Features</a></li>
+        <li><a href="#categories" class="hover:text-blue-600 transition">Categories</a></li>
+        <li><a href="#contact" class="hover:text-blue-600 transition">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons hidden md:flex space-x-4">
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="btn-login border-2 border-red-600 text-red-600 px-5 py-2 rounded-full hover:bg-red-600 hover:text-white transition">Logout</a>
+      {% else %}
+
+      <a href="{% url 'login' %}" class="btn-login border-2 border-blue-600 text-blue-600 px-5 py-2 rounded-full hover:bg-blue-600 hover:text-white transition">Login</a>
+      <a href="{% url 'register' %}" class="btn-register bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition">Register</a>
+      {% endif %}
+    </div>
+    <div class="hamburger flex flex-col space-y-1 md:hidden cursor-pointer">
+      <span class="w-6 h-0.5 bg-gray-800"></span>
+      <span class="w-6 h-0.5 bg-gray-800"></span>
+      <span class="w-6 h-0.5 bg-gray-800"></span>
+    </div>
+  </div>
+</header>

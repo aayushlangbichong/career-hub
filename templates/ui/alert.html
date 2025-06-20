@@ -1,0 +1,16 @@
+{% if messages %}
+{% for message in messages %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+            position: "center",
+            title: "{{ message.tags|title }}",
+            text: "{{ message|escapejs }}",
+            icon: "{{ message.tags }}",
+            confirmButtonText: "Continue",
+        });
+    });
+</script>
+
+{% endfor %}
+{% endif %}
