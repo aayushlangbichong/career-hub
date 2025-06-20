@@ -18,12 +18,12 @@
         {% csrf_token %}
         <div>
           <label class="block text-gray-700">Username</label>
-          <input type="username" name="username" placeholder="Enter your username" value="{{ctx.username}}"
+          <input type="username" name="username" placeholder="Enter your username" value="{{ctx.username}}" required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
         </div>
         <div>
           <label class="block text-gray-700">Password</label>
-          <input type="password" name="password" placeholder="•••••••••" value="{{ctx.password}}"
+          <input type="password" name="password" placeholder="•••••••••" value="{{ctx.password}}" required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
         </div>
         <div>
