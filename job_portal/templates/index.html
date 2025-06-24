@@ -4,15 +4,16 @@
 
 {% block content %}
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 <main>
   <!-- Hero Section -->
-  <section class="relative bg-cover bg-center bg-no-repeat py-20 text-white" style="background-image: url('{% static "images/bg-hero.jpg" %}');">
+  <section class="relative bg-cover bg-center bg-no-repeat py-32 text-white" style="background-image: url('{% static "images/bg-hero.jpg" %}');">
 
     <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
 
     <div class="max-w-6xl mx-auto px-4 z-10">
       <div class="grid md:grid-cols-3 gap-10 items-center relative z-10">
-        <!-- Hero Text -->
         <div class="space-y-6 col-span-2">
           <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
             Find Your <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">Dream
@@ -22,64 +23,28 @@
             Connect with top employers and discover opportunities that match your skills and aspirations. Your next
             career move starts here.
           </p>
+
           <!-- Search Bar -->
           <div
-            class="flex flex-col md:flex-row items-stretch bg-white text-gray-800 rounded-full shadow-lg p-2 space-y-2 md:space-y-0 md:space-x-2">
-            <div class="flex items-center w-full md:w-1/2 px-3">
+            class="flex flex-col md:flex-row bg-white w-2/3 text-gray-800 rounded-full shadow-lg p-2 bg-red-600 space-y-2 md:space-y-0 md:space-x-2">
+            <div class="flex items-center justify-between w-full  px-3 gap-4">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
 
-              <input type="text" placeholder="Job title, keywords, or company"
-                class="w-full bg-transparent focus:outline-none" />
+              <input type="text" placeholder="Search for jobs or company"
+                class="w-full focus:outline-none" />
             </div>
-            <div class="flex items-center w-full md:w-1/3 px-3">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-              </svg>
-
-              <input type="text" placeholder="City" class="w-full bg-transparent focus:outline-none" />
-            </div>
+           
             <button
-              class="bg-gradient-to-r min-w-40 cursor-pointer from-blue-600 to-blue-500 text-white font-semibold px-6 py-3 rounded-full hover:shadow-lg transition-all">Search
+              class="bg-gradient-to-r md:min-w-40 cursor-pointer from-blue-600 to-blue-400 text-white md:font-semibold px-6 py-3 rounded-full hover:shadow-lg transition-all">Search
               Jobs</button>
           </div>
-
         </div>
 
-        <!-- Hero Cards -->
-        <div class="relative h-96 text-black">
-          <div class="absolute top-10 left-10 bg-white rounded-xl p-6 shadow-lg animate-bounce duration-[5000s]">
-            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
-
-              <h3 class="font-semibold text-lg mb-1">Software Engineer</h3>
-            </span>
-            <p class="text-green-500 font-medium">$90k - $120k</p>
-          </div>
-
-          <div class="absolute bottom-8 left-5 bg-white rounded-xl p-6 shadow-lg animate-bounce duration-[5000s]">
-            <span class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" />
-              </svg>
-
-              <h3 class="font-semibold text-lg mb-1">Financial Analyst</h3>
-            </span>
-            <p class="text-green-500 font-medium">$60k - $85k</p>
-          </div>
-        </div>
+       
       </div>
     </div>
   </section>
@@ -88,9 +53,9 @@
   <section class="bg-gray-50 py-20">
     <div class="max-w-6xl mx-auto px-4">
       <div class="text-center mb-12">
-        {% if request.user.profile.role == "employer" %}
+        {% if request.user.profile.role == "company" %}
         <p>Welcome Employer! You can post jobs here.</p>
-        {% elif request.user.profile.role == "jobseeker" %}
+        {% elif request.user.profile.role == "job_seeker" %}
         <p>Welcome Job Seeker! Browse jobs below.</p>
         {% else %}
         <p>Welcome to CareerHub!</p>
@@ -135,20 +100,36 @@
     </div>
   </section>
 
-  <!-- Popular Categories -->
+  <!-- Popular Jobs -->
   <section class="bg-white py-20">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="mx-auto max-w-7xl px-4">
       <div class="text-center mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Popular Jobs</h2>
         <p class="text-gray-600 text-lg max-w-2xl mx-auto">Explore opportunities across various industries</p>
       </div>
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">Job1</div>
-        <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">Job2</div>
-        <div class="bg-white rounded-xl p-8 shadow-md text-center transition hover:-translate-y-2 hover:shadow-xl duration-300">Job3</div>
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
         
-      </div>
-    </div>
+         {% for job in jobs %}  
+        <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow">
+          <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center space-x-4">
+               <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
+                      <span class="text-white font-bold">Logo</span>
+                  </div>
+                  <div>
+                      <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+                      <div class="flex items-center justify-center space-x-4 text-sm text-gray-500 mt-1">
+                          <span class="flex items-center justify-center"><i class="fas fa-building mr-1"></i>{{ job.company }}</span>
+                          <span class="flex items-center justify-center"><i class="fas fa-map-marker-alt mr-1"></i>{{ job.location }}</span>
+                          <span class="flex items-center justify-center"><i class="fas fa-clock mr-1"></i>{{ job.working_hours }}</span>
+                          <span class="flex items-center justify-center">Rs.{{job.salary }}/monthly</span>
+                      </div>
+                  </div>
+              </div>       
+          </div> 
+        </div>
+        {% endfor %}
+    </div>    
   </section>
 
   <!-- Call to Action -->

@@ -15,4 +15,15 @@ class CompanyProfile(models.Model):
     company_description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.company_name} - Company Profile"
+        return f"{self.company_name}"
+    
+class JobPost(models.Model):
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    location = models.CharField(max_length=255, blank=True, null=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    working_hours=models.CharField(max_length=100, blank=True, null=True) 
+
+    def __str__(self):
+        return f"{self.title} at {self.company.company_name}"       

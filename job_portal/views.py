@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as lg, logout as lgout
 from django.contrib.auth.models import User
-from .models import JobSeekerProfile, CompanyProfile
+from .models import JobSeekerProfile, CompanyProfile,JobPost
 
 def get_role(user):
     try:
@@ -16,7 +16,12 @@ def get_role(user):
             return None
 
 def index(request):
-    return render(request,"index.html")
+    jobs= JobPost.objects.all()
+    ctx = {
+        "jobs": jobs
+    }
+
+    return render(request,"index.html",ctx)
 
 def login(request):
     if request.user.is_authenticated:
@@ -138,6 +143,32 @@ def applied(request):
 
 def jobs(request):
     return render(request, "jobs.html")
+
+def post_jobs(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        location = request.POST.get("location")
+        salary = request.POST.get("salary")
+        working_hours = request.POST.get("working_hours")
+
+        if not all([title, description, location, salary, working_hours]):
+            messages.error(request, "All fields are required.")
+            return render(request, "post_jobs.html")
+
+        company_profile = CompanyProfile.objects.get(user=request.user)
+        job_post = JobPost(
+            company=company_profile,
+            title=title,
+            description=description,
+            location=location,
+            salary=salary,
+            working_hours=working_hours
+        )
+        job_post.save()
+        messages.success(request, "Job posted successfully!")
+
+    return render(request, "post_jobs.html")
     
  
 
