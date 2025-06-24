@@ -98,7 +98,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "media"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+   BASE_DIR / "job_portal" / "static",
 ]
 
 

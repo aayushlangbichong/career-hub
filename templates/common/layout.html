@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
     <style type="text/tailwindcss">
       @theme {
         --color-clifford: #da373d;
@@ -14,9 +17,11 @@
     </style>
   </head>
   <body style="font-family: 'Lexend', sans-serif">
-    {% include 'common/header.html' %} 
-    {% block content %} {% endblock content %}
-    {% include 'common/footer.html' %}
+    <main class="min-h-screen flex flex-col">
+      {% include 'common/header.html' %}
+      <div class="grow">{% block content %} {% endblock content %}</div>
+      {% include 'common/footer.html' %}
+    </main>
     {% include 'ui/alert.html'%}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>

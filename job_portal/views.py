@@ -2,10 +2,21 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as lg, logout as lgout
 from django.contrib.auth.models import User
+from .models import JobSeekerProfile, CompanyProfile
+
+def get_role(user):
+    try:
+        profile = JobSeekerProfile.objects.get(user=user)
+        return "job_seeker"
+    except JobSeekerProfile.DoesNotExist:
+        try:
+            profile = CompanyProfile.objects.get(user=user)
+            return "company"
+        except CompanyProfile.DoesNotExist:
+            return None
 
 def index(request):
     return render(request,"index.html")
-
 
 def login(request):
     if request.user.is_authenticated:
@@ -17,7 +28,7 @@ def login(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-
+        # Return error if any field is empty
         if not username or not password:
             messages.error(request, "Username and password are required.")
             return render(request, "auth/login.html", ctx)
@@ -30,13 +41,46 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             lg(request, user)
-            return redirect('index')
+            role = get_role(user)
+            if role == "job_seeker":
+                JobSeekerProfile.objects.get_or_create(user=user)
+                return redirect(f'/onboarding/?role=job_seeker')
+            elif role == "company":
+                CompanyProfile.objects.get_or_create(user=user)
+                return redirect(f'/onboarding/?role=company')
+            return redirect('index') 
         else:
             messages.error(request, "Invalid username or password.")
             return render(request, "auth/login.html", ctx)
 
     return render(request, "auth/login.html", ctx)
 
+def onboarding(request):
+    role = request.GET.get('role')
+    ctx = {
+        "role": role
+    }
+    if role not in ["job_seeker", "company"]:
+        messages.error(request, "Invalid role specified.")
+        return redirect('index')
+    
+    if request.method == "POST":
+        if role == "job_seeker":
+            profile = JobSeekerProfile.objects.get(user=request.user)
+            profile.resume = request.FILES.get("resume")
+            profile.skills = request.POST.get("skills")
+            profile.save()
+            messages.success(request, "Job Seeker profile updated successfully!")
+            return redirect('index')
+        elif role == "company":
+            profile = CompanyProfile.objects.get(user=request.user)
+            profile.company_name = request.POST.get("company_name")
+            profile.company_description = request.POST.get("company_description")
+            profile.logo = request.FILES.get("logo")
+            profile.save()
+            messages.success(request, "Company profile updated successfully!")
+            return redirect('index')
+    return render(request, "auth/onboarding.html",ctx)
 
 
 def register(request):
@@ -50,9 +94,10 @@ def register(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
+        role=request.POST.get("user_type")
 
         # Field validation
-        if not all([first_name, last_name, username , password, confirm_password]):
+        if not all([first_name, last_name, username , password, confirm_password,role]):
             messages.error(request, "All fields are required.")
             return render(request, "auth/register.html", ctx)
 
@@ -65,13 +110,18 @@ def register(request):
             return render(request, "auth/register.html", ctx)
 
      
-        # Create the user
         user = User.objects.create_user(
             username=username,
             password=password,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
         )
+        if role == "job_seeker":
+            profile = JobSeekerProfile(user=user)
+            profile.save()
+        else:
+            profile = CompanyProfile(user=user)
+            profile.save()
         user.save()
 
         messages.success(request, "Account created successfully! Please login.")
@@ -82,5 +132,12 @@ def register(request):
 def logout(request):
     lgout(request)
     return redirect('index')
+
+def applied(request):
+    return render(request, "applied.html")
+
+def jobs(request):
+    return render(request, "jobs.html")
     
+ 
 

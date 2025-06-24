@@ -1,4 +1,5 @@
 {% extends 'common/auth-layout.html' %}
+{% load static %}
 
 {% block content %}
 <main class="min-h-screen flex items-center py-10 justify-center bg-gradient-to-br from-indigo-50 to-white">
@@ -44,7 +45,7 @@
           <label class="block text-sm font-medium mb-1.5">I am a</label>
           <div class="flex items-center gap-6">
             <label class="flex items-center gap-2">
-              <input type="radio" name="user_type" value="jobseeker" checked class="accent-indigo-600" />
+              <input type="radio" name="user_type" value="job_seeker" checked class="accent-indigo-600" />
               <span>Job Seeker</span>
             </label>
             <label class="flex items-center gap-2">
@@ -66,13 +67,16 @@
     </div>
 
     <!-- right illustration -->
-    <div class="hidden lg:flex items-center justify-center bg-indigo-50 p-10">
-      <div class="space-y-6 max-w-md">
-        <h2 class="text-2xl font-semibold text-indigo-800">Start Your Career Journey</h2>
-        <p class="text-sm text-gray-600">
+    <div class="hidden relative lg:flex bg-center items-center justify-center p-10 bg-cover" style="background-image: url('{% static "images/career.jpg" %}');" >
+
+     <div class="absolute inset-0 bg-black opacity-30 z-0"></div>
+
+      <div class="space-y-6 max-w-md z-50">
+        <h2 class="text-2xl font-semibold text-indigo-600">Start Your Career Journey</h2>
+        <p class="text-sm text-white">
           Join our community and unlock endless job opportunities tailored to you.
         </p>
-        <ul class="space-y-3 text-sm text-gray-700">
+        <ul class="space-y-3 text-sm text-white">
           <li class="flex items-center gap-2">Access to 50,000+ jobs</li>
           <li class="flex items-center gap-2">AI-powered job matching</li>
           <li class="flex items-center gap-2">Direct contact with employers</li>

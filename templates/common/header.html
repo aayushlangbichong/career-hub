@@ -1,14 +1,13 @@
-<header class="header bg-white fixed w-full top-0 left-0 shadow z-50">
-  <div class="nav-container max-w-6xl mx-auto flex items-center justify-between py-4 px-4">
+<header class="header bg-white w-full shadow z-50 top-0 sticky">
+  <div class="max-w-6xl mx-auto flex items-center justify-between py-4 px-4 lg:px-0">
     <div class="logo text-blue-600 font-bold text-2xl">
-      <i class="fas fa-briefcase mr-2"></i>CareerHub
+     CareerHub
     </div>
     <nav>
       <ul class="nav-menu hidden md:flex space-x-6 font-medium">
-        <li><a href="#home" class="hover:text-blue-600 transition">Home</a></li>
-        <li><a href="#features" class="hover:text-blue-600 transition">Features</a></li>
-        <li><a href="#categories" class="hover:text-blue-600 transition">Categories</a></li>
-        <li><a href="#contact" class="hover:text-blue-600 transition">Contact</a></li>
+        <li><a href="{% url 'index' %}" class="hover:text-blue-600 transition">Home</a></li>
+        <li><a href="{% url 'jobs' %}" class="hover:text-blue-600 transition">Find Jobs</a></li>
+        <li><a href="{% url 'applied' %}" class="hover:text-blue-600 transition">Applied Jobs</a></li>
       </ul>
     </nav>
     <div class="auth-buttons hidden md:flex space-x-4">

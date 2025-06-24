@@ -1,14 +1,16 @@
 {% extends 'common/auth-layout.html' %}
+{% load static %}
 
 {% block content %}
 <main class="flex h-screen">
   <!-- Left Indigo Side -->
-  <div class="w-1/2 bg-indigo-600 text-white flex items-center justify-center p-10">
-    <div class="text-center">
+  <section class="w-1/2 relative  bg-cover bg-center text-white flex items-center justify-center p-10 bg-indigo-600" style="background-image: url('{% static "images/sign-in.jpg" %}');">
+    <div class="bg-black opacity-60 inset-0 z-0 absolute"></div>
+    <div class="text-center text-white z-10">
       <h1 class="text-4xl font-bold mb-4">Welcome Back</h1>
       <p class="text-lg">Enter your credentials to access your account</p>
     </div>
-  </div>
+  </section>
 
   <!-- Right Login Form -->
   <div class="w-1/2 flex items-center justify-center bg-white">
