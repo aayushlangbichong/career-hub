@@ -53,14 +53,6 @@
   <section class="bg-gray-50 py-20">
     <div class="max-w-6xl mx-auto px-4">
       <div class="text-center mb-12">
-        {% if request.user.profile.role == "company" %}
-        <p>Welcome Employer! You can post jobs here.</p>
-        {% elif request.user.profile.role == "job_seeker" %}
-        <p>Welcome Job Seeker! Browse jobs below.</p>
-        {% else %}
-        <p>Welcome to CareerHub!</p>
-        {% endif %}
-
         <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Why Choose CareerHub?</h2>
         <p class="text-gray-600 text-lg max-w-2xl mx-auto">Discover the features that make us the preferred choice for
           job seekers and employers</p>

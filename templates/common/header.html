@@ -1,3 +1,5 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 <header class="header bg-white w-full shadow z-50 top-0 sticky">
   <div class="max-w-6xl mx-auto flex items-center justify-between py-4 px-4 lg:px-0">
     <div class="logo text-blue-600 font-bold text-2xl">
@@ -13,13 +15,13 @@
     </nav>
     <div class="auth-buttons hidden md:flex space-x-4">
       {% if request.user.is_authenticated %}
-      <a href="{% url 'logout' %}" class="btn-login border-2 border-red-600 text-red-600 px-5 py-2 rounded-full hover:bg-red-600 hover:text-white transition">Logout</a>
-      <a href="{% url 'logout' %}" class="btn-login border-2 border-red-600 text-red-600 px-5 py-2 rounded-full hover:bg-red-600 hover:text-white transition">Logout</a>
+      <a href="{% url 'logout' %}" class="border-2 border-red-600 text-red-600 px-5 py-2 rounded-full hover:bg-red-600 hover:text-white transition">Logout</a>
+      <a href="{% url 'user_profile' %}" class="px-3 py-2 bg-blue-100 rounded-xl flex gap-2 items-center"><div class="rounded-full bg-blue-600 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-user"></i></div>{{ request.user.first_name }} {{ request.user.last_name }}</a>
 
       {% else %}
 
-      <a href="{% url 'login' %}" class="btn-login border-2 border-blue-600 text-blue-600 px-5 py-2 rounded-full hover:bg-blue-600 hover:text-white transition">Login</a>
-      <a href="{% url 'register' %}" class="btn-register bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition">Register</a>
+      <a href="{% url 'login' %}" class=" border-2 border-blue-600 text-blue-600 px-5 py-2 rounded-full hover:bg-blue-600 hover:text-white transition">Login</a>
+      <a href="{% url 'register' %}" class=" bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition">Register</a>
       {% endif %}
     </div>
     <div class="hamburger flex flex-col space-y-1 md:hidden cursor-pointer">

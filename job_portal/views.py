@@ -170,5 +170,52 @@ def post_jobs(request):
 
     return render(request, "post_jobs.html")
     
+def user_profile(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    user = request.user
+    ctx = {}
+
+    if request.method == "POST":
+        # Update User model fields
+        user.first_name = request.POST.get("first_name")
+        user.last_name = request.POST.get("last_name")
+        user.save()
+
+        # Update profile fields
+        try:
+            profile = JobSeekerProfile.objects.get(user=user)
+            profile.skills = request.POST.get("skills")
+            if request.FILES.get("resume"):
+                profile.resume = request.FILES["resume"]
+            profile.save()
+            ctx["role"] = "job_seeker"
+        except JobSeekerProfile.DoesNotExist:
+            try:
+                profile = CompanyProfile.objects.get(user=user)
+                profile.company_name = request.POST.get("company_name")
+                profile.company_description = request.POST.get("company_description")
+                profile.save()
+                ctx["role"] = "company"
+            except CompanyProfile.DoesNotExist:
+                messages.error(request, "Profile not found.")
+                return redirect("index")
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect("user_profile")
+
+    # GET method
+    try:
+        profile = JobSeekerProfile.objects.get(user=user)
+        ctx = {"profile": profile, "role": "job_seeker"}
+    except JobSeekerProfile.DoesNotExist:
+        try:
+            profile = CompanyProfile.objects.get(user=user)
+            ctx = {"profile": profile, "role": "company"}
+        except CompanyProfile.DoesNotExist:
+            ctx = {"profile": None, "role": None}
+
+    return render(request, "user_profile.html", ctx)
  
 
