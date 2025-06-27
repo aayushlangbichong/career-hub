@@ -11,14 +11,16 @@ urlpatterns = [
     path('logout/',v.logout,name="logout" ),
     path('onboarding/',v.onboarding,name="onboarding" ),
     
-    # Home Pages
+    # Job seeker pages
     path('',v.index,name="index" ),
     path('jobs/', v.jobs, name="jobs"),
     path('applied/', v.applied, name="applied"),
-    path('post_jobs/', v.post_jobs, name="post_jobs"),
     path('user_profile/', v.user_profile, name="user_profile"),
-    path('dashboard/', v.dashboard, name="dashboard"),
 
+    # Company pages
+    path('dashboard/', v.dashboard, name="dashboard"),
+    path('post_jobs/', v.post_jobs, name="post_jobs"),
+    path('company_profile/', v.company_profile, name="company_profile"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 

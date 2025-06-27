@@ -97,6 +97,7 @@ def dashboard(request):
         return redirect('login')
 
     role = get_role(request.user)
+    
     if role != "employer":
         messages.error(request, "Access denied.")
         return redirect('index')
@@ -191,7 +192,7 @@ def post_jobs(request):
         job_post.save()
         messages.success(request, "Job posted successfully!")
 
-    return render(request, "post_jobs.html")
+    return render(request, "company/post_jobs.html")
     
 def user_profile(request):
     if not request.user.is_authenticated:
@@ -238,4 +239,27 @@ def user_profile(request):
 
     return render(request, "user_profile.html", ctx)
  
+def company_profile(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
 
+    user = request.user
+    try:
+        company_profile = CompanyProfile.objects.get(user=user)
+    except CompanyProfile.DoesNotExist:
+        messages.error(request, "Company profile not found.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        company_profile.company_name = request.POST.get("company_name")
+        company_profile.company_description = request.POST.get("company_description")
+        if request.FILES.get("logo"):
+            company_profile.logo = request.FILES["logo"]
+        company_profile.save()
+        messages.success(request, "Company profile updated successfully!")
+        return redirect("company_profile")
+
+    ctx = {
+        "company_profile": company_profile
+    }
+    return render(request, "company/company_profile.html", ctx)

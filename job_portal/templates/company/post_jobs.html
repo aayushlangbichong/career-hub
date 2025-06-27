@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "common/dashboard_layout.html" %}
 {% load static %}
 
 {% block content %}
@@ -9,42 +9,42 @@
       <form method="POST" action="" >
         {% csrf_token %}
         
-        <!-- Job Title -->
+   
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-1">Job Title</label>
           <input type="text" name="title" placeholder="e.g. Frontend Developer" required
                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
   
-        <!-- Job Description -->
+    
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-1">Job Description</label>
           <textarea name="description" rows="5" placeholder="Write the job responsibilities and requirements here..." required
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
   
-        <!-- Salary -->
+    
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-1">Salary</label>
           <input type="number" name="salary" placeholder="e.g. Rs 40000/month or Negotiable"
                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
   
-        <!-- Working Hours -->
+     
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-1">Working Hours</label>
           <input type="text" name="working_hours" placeholder="e.g. 9 AM – 5 PM"
                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
   
-        <!-- Location -->
+
         <div class="mb-6">
           <label class="block text-gray-700 font-medium mb-1">Location</label>
           <input type="text" name="location" placeholder="e.g. Kathmandu, Nepal" required
                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
   
-        <!-- Submit -->
+ 
         <button type="submit"
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition">
           Post Job
@@ -54,3 +54,4 @@
   </main>
   
 {% endblock %}
+

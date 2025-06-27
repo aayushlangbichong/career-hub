@@ -13,10 +13,6 @@
       </ul>
     </nav> 
 
-<script>
-    console.log("User is logged in as: {{ request.user. }}");
-</script>
-
     <div class="auth-buttons hidden md:flex space-x-4">
       {% if request.user.is_authenticated %}
       <a href="{% url 'logout' %}" class="border-2 border-red-600 text-red-600 px-6 py-1 flex items-center rounded-full hover:bg-red-600 hover:text-white transition">Logout</a>
@@ -28,13 +24,32 @@
       <a href="{% url 'register' %}" class=" bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition">Register</a>
       {% endif %}
     </div>
-    <div class="hamburger flex flex-col space-y-1 md:hidden cursor-pointer">
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-    </div>
+    <button id="hamburger" class="md:hidden p-2 focus:outline-none">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+       viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+<nav id="mobileMenu" class="md:hidden flex flex-col bg-white p-4 space-y-2 shadow-md">
+  <a href="/" class="hover:text-blue-500">Home</a>
+  <a href="/applid" class="hover:text-blue-500">Applied Jobs</a>
+  <a href="/jobs" class="hover:text-blue-500">Jobs</a>
+  <a href="/contact" class="hover:text-blue-500">Profile</a>
+</nav>
+
   </div>
 
 </header>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
 
 

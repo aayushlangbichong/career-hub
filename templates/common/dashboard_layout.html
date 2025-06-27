@@ -18,8 +18,10 @@
   </head>
   <body style="font-family: 'Lexend', sans-serif">
     <main class="min-h-screen flex">
-      {% include 'common/sidebar.html' %}
-      <div class="grow">{% block content %} {% endblock content %}</div>
+      <aside class="w-80">{% include 'common/sidebar.html' %}</aside>
+      <div class="grow">
+        {% block content %} {% endblock content %}
+      </div>
     </main>
   </body>
 </html>
