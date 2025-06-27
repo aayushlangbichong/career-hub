@@ -11,7 +11,7 @@ def get_role(user):
     except JobSeekerProfile.DoesNotExist:
         try:
             profile = CompanyProfile.objects.get(user=user)
-            return "company"
+            return "employer"
         except CompanyProfile.DoesNotExist:
             return None
 
@@ -33,39 +33,44 @@ def login(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        # Return error if any field is empty
         if not username or not password:
             messages.error(request, "Username and password are required.")
             return render(request, "auth/login.html", ctx)
-
-        ctx = {
-            "username": username,
-            "password": password
-        }
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             lg(request, user)
             role = get_role(user)
+
             if role == "job_seeker":
-                JobSeekerProfile.objects.get_or_create(user=user)
-                return redirect(f'/onboarding/?role=job_seeker')
-            elif role == "company":
-                CompanyProfile.objects.get_or_create(user=user)
-                return redirect(f'/onboarding/?role=company')
-            return redirect('index') 
+                profile, created = JobSeekerProfile.objects.get_or_create(user=user)
+                if profile.resume and profile.skills:
+                    return redirect('index')
+                else:
+                    return redirect('/onboarding/?role=job_seeker')
+
+            elif role == "employer":
+                profile, created = CompanyProfile.objects.get_or_create(user=user)
+                if profile.company_name and profile.company_description:
+                    return redirect('dashboard')
+                else:
+                    return redirect('/onboarding/?role=employer')
+
+            return redirect('index')  
         else:
             messages.error(request, "Invalid username or password.")
+            ctx = {"username": username}
             return render(request, "auth/login.html", ctx)
 
     return render(request, "auth/login.html", ctx)
+
 
 def onboarding(request):
     role = request.GET.get('role')
     ctx = {
         "role": role
     }
-    if role not in ["job_seeker", "company"]:
+    if role not in ["job_seeker", "employer"]:
         messages.error(request, "Invalid role specified.")
         return redirect('index')
     
@@ -77,7 +82,7 @@ def onboarding(request):
             profile.save()
             messages.success(request, "Job Seeker profile updated successfully!")
             return redirect('index')
-        elif role == "company":
+        elif role == "employer":
             profile = CompanyProfile.objects.get(user=request.user)
             profile.company_name = request.POST.get("company_name")
             profile.company_description = request.POST.get("company_description")
@@ -87,6 +92,24 @@ def onboarding(request):
             return redirect('index')
     return render(request, "auth/onboarding.html",ctx)
 
+def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    role = get_role(request.user)
+    if role != "employer":
+        messages.error(request, "Access denied.")
+        return redirect('index')
+
+    company_profile = CompanyProfile.objects.get(user=request.user)
+    job_posts = JobPost.objects.filter(company=company_profile)
+
+    ctx = {
+        "company_profile": company_profile,
+        "job_posts": job_posts,
+        "role": role
+    }
+    return render(request, "company/dashboard.html", ctx)
 
 def register(request):
     if request.user.is_authenticated:
@@ -101,7 +124,6 @@ def register(request):
         confirm_password = request.POST.get("confirm_password")
         role=request.POST.get("user_type")
 
-        # Field validation
         if not all([first_name, last_name, username , password, confirm_password,role]):
             messages.error(request, "All fields are required.")
             return render(request, "auth/register.html", ctx)
@@ -121,6 +143,7 @@ def register(request):
             first_name=first_name,
             last_name=last_name,
         )
+        
         if role == "job_seeker":
             profile = JobSeekerProfile(user=user)
             profile.save()
@@ -178,12 +201,10 @@ def user_profile(request):
     ctx = {}
 
     if request.method == "POST":
-        # Update User model fields
         user.first_name = request.POST.get("first_name")
         user.last_name = request.POST.get("last_name")
         user.save()
 
-        # Update profile fields
         try:
             profile = JobSeekerProfile.objects.get(user=user)
             profile.skills = request.POST.get("skills")
@@ -197,7 +218,7 @@ def user_profile(request):
                 profile.company_name = request.POST.get("company_name")
                 profile.company_description = request.POST.get("company_description")
                 profile.save()
-                ctx["role"] = "company"
+                ctx["role"] = "employer"
             except CompanyProfile.DoesNotExist:
                 messages.error(request, "Profile not found.")
                 return redirect("index")
@@ -205,14 +226,13 @@ def user_profile(request):
         messages.success(request, "Profile updated successfully!")
         return redirect("user_profile")
 
-    # GET method
     try:
         profile = JobSeekerProfile.objects.get(user=user)
         ctx = {"profile": profile, "role": "job_seeker"}
     except JobSeekerProfile.DoesNotExist:
         try:
             profile = CompanyProfile.objects.get(user=user)
-            ctx = {"profile": profile, "role": "company"}
+            ctx = {"profile": profile, "role": "employer"}
         except CompanyProfile.DoesNotExist:
             ctx = {"profile": None, "role": None}
 
