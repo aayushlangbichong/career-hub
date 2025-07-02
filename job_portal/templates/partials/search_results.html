@@ -1,0 +1,25 @@
+{% load humanize %}
+
+{% for job in jobs %}
+<a href="{% url 'job_details' job.id %}">
+  <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow flex w-full items-center">
+    <div class="flex justify-between items-start">
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center">
+          <span class="text-white text-lg font-bold">{{ job.company.company_name|slice:":1" }}</span>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+          <div class="flex items-center justify-center space-x-4 text-xs text-gray-500 mt-1">
+            <span class="flex items-center justify-center"><i class="fas fa-building mr-1"></i>{{ job.company }}</span>
+            <span class="flex items-center justify-center"><i class="fas fa-map-marker-alt mr-1"></i>{{ job.location }}</span>
+            <span class="flex items-center justify-center gap-1"><i class="fa-solid fa-money-bill"></i> Rs.{{ job.salary|floatformat:0|intcomma }}/monthly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>
+{% empty %}
+<p class="text-gray-500 col-span-2">No jobs found.</p>
+{% endfor %}

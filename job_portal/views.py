@@ -3,6 +3,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login as lg, logout as lgout
 from django.contrib.auth.models import User
 from .models import JobSeekerProfile, CompanyProfile,JobPost
+from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 def get_role(user):
     try:
@@ -16,7 +21,7 @@ def get_role(user):
             return None
 
 def index(request):
-    jobs= JobPost.objects.all()
+    jobs= JobPost.objects.all()[:4]
     ctx = {
         "jobs": jobs
     }
@@ -64,7 +69,6 @@ def login(request):
 
     return render(request, "auth/login.html", ctx)
 
-
 def onboarding(request):
     role = request.GET.get('role')
     ctx = {
@@ -89,7 +93,7 @@ def onboarding(request):
             profile.logo = request.FILES.get("logo")
             profile.save()
             messages.success(request, "Company profile updated successfully!")
-            return redirect('index')
+            return redirect('dashboard')
     return render(request, "auth/onboarding.html",ctx)
 
 def dashboard(request):
@@ -166,7 +170,11 @@ def applied(request):
     return render(request, "applied.html")
 
 def jobs(request):
-    return render(request, "jobs.html")
+    jobs= JobPost.objects.all()
+    ctx = {
+        "jobs": jobs
+    }
+    return render(request, "jobs.html",ctx)
 
 def post_jobs(request):
     if request.method == "POST":
@@ -263,3 +271,39 @@ def company_profile(request):
         "company_profile": company_profile
     }
     return render(request, "company/company_profile.html", ctx)
+
+def job_details(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+    return render(request, 'job_details.html', {'job': job})
+
+def search_jobs(request):
+    query = request.GET.get('q', '')
+    jobs = JobPost.objects.filter(title__icontains=query) if query else JobPost.objects.all()
+    html = render_to_string('partials/search_results.html', {'jobs': jobs})
+    return HttpResponse(html)
+
+def manage_jobs(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    company_profile = CompanyProfile.objects.get(user=request.user)
+    job_posts = JobPost.objects.filter(company=company_profile)
+    role = get_role(request.user)
+    jobs= JobPost.objects.all()
+
+    ctx = {
+        "company_profile": company_profile,
+        "job_posts": job_posts,
+        "jobs": jobs,
+        "role": role
+    }
+    return render(request, "company/manage_jobs.html", ctx)
+
+@csrf_exempt
+def apply_job(request, job_id):
+    if request.method == "POST":
+        message = request.POST.get("message")
+        messages.success(request, "Your application has been submitted.")
+        return redirect('job_details', job_id=job_id)
+
+    return redirect('index')

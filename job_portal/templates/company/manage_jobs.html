@@ -1,0 +1,22 @@
+{% extends "common/dashboard_layout.html" %}
+{% load static %}
+
+{% block content %}
+{% if jobs %}
+  <div class="space-y-4">
+    {% for job in jobs %}
+      <div class="p-4 border border-gray-300 rounded-md bg-gray-50">
+        <h3 class="text-lg font-semibold text-indigo-600">{{ job.title }}</h3>
+        <p class="text-sm text-gray-700 mt-1">{{ job.description|truncatewords:25 }}</p>
+        <div class="text-sm text-gray-500 mt-2">
+          <span><strong>Salary:</strong> Rs. {{ job.salary|floatformat:0 }}</span> |
+          <span><strong>Hours:</strong> {{ job.working_hours }}</span> |
+          <span><strong>Location:</strong> {{ job.location }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-center text-gray-500">You haven't posted any jobs yet.</p>
+{% endif %}
+{% endblock %}

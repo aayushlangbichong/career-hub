@@ -1,5 +1,6 @@
-{% extends "index.html" %}
+{% extends "common/layout.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 
@@ -13,32 +14,12 @@
                 <!-- Job Search -->
                 <div class="flex-1">
                     <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="Job title, keywords, or company" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-8 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Job title, keywords, or company" id="searchInput" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
                 
-                <!-- Location -->
-                <div class="flex-1">
-                    <div class="relative">
-                        <i class="fas fa-map-marker-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="City or postcode" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                </div>
-                
-                <!-- Category -->
-                <div class="flex-1">
-                    <div class="relative">
-                        <i class="fas fa-th-large absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <select class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
-                            <option>Choose a category</option>
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-                
-                <!-- Search Button -->
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium">Find Jobs</button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium" id="searchButton">Find Jobs</button>
             </div>
         </div>
     </div>
@@ -63,11 +44,8 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Results Header -->
         <div class="flex justify-between items-center mb-6">
-            <span class="text-gray-600">16 jobs</span>
             <div class="flex gap-4">
                 <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm">
                     <option>Sort by (default)</option>
@@ -78,185 +56,63 @@
             </div>
         </div>
 
-        <!-- Job Listings Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Job Card 1 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">S</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Software Engineer (Android), Libraries</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Segment</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Full Time</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="searchResults">
+            <!-- Job Cards -->  
+            {% for job in jobs %} 
+            <a href="{% url 'job_details' job.id %}">
+              
+            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow flex w-full items-center">
+              <div class="flex justify-between items-start">
+                  <div class="flex items-center space-x-4">
+                   <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center">
+                          <span class="text-white text-lg font-bold">{{ job.company.company_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                          <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+                          <div class="flex items-center justify-center space-x-4 text-xs text-gray-500 mt-1">
+                              <span class="flex items-center justify-center"><i class="fas fa-building mr-1"></i>{{ job.company }}</span>
+                              <span class="flex items-center justify-center"><i class="fas fa-map-marker-alt mr-1"></i>{{ job.location }}</span>
+                              <span class="flex items-center justify-center gap-1"><i class="fa-solid fa-money-bill"></i> Rs.{{ job.salary|floatformat:0|intcomma }}/monthly</span>
+                          </div>
+                      </div>
+                  </div>       
+              </div> 
             </div>
-
-            <!-- Job Card 2 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">R</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Recruiting Coordinator</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Catalyst</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Freelance</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
-            </div>
-
-            <!-- Job Card 3 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">UP</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Senior Product Designer</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Upwork</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Temporary</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
-            </div>
-
-            <!-- Job Card 4 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">M</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Senior Full Stack Engineer, Creator Success</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Medium</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Full Time</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
-            </div>
-
-            <!-- Job Card 5 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">F</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Software Engineer (Android), Libraries</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Figma</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Freelance</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
-            </div>
-
-            <!-- Job Card 6 -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold">S</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Software Engineer (Android), Libraries</h3>
-                            <div class="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                                <span><i class="fas fa-building mr-1"></i>Segment</span>
-                                <span><i class="fas fa-map-marker-alt mr-1"></i>London, UK</span>
-                                <span><i class="fas fa-clock mr-1"></i>11 hours ago</span>
-                                <span><i class="fas fa-dollar-sign mr-1"></i>$53k - $43k</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">Part Time</span>
-                    <span class="px-3 py-1 bg-green-100 text-green-600 text-xs rounded-full">Private</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">Urgent</span>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Load More Button -->
-        <div class="text-center mt-8">
-            <span class="text-gray-600 text-sm">Showing 36 of 497 jobs</span>
-            <div class="mt-4">
-                <button class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50">Show More</button>
-            </div>
-        </div>
+            </a>
+            {% endfor %}
+        </div>    
     </div>
+
+    <script>
+        let debounceTimer;
+        const delay = 300;
+      
+        const input = document.getElementById('searchInput');
+        const button = document.getElementById('searchButton');
+        const resultsContainer = document.getElementById('searchResults');
+      
+        function performSearch(query) {
+          fetch(`/search/?q=${encodeURIComponent(query)}`)
+            .then(response => response.text())
+            .then(data => {
+              resultsContainer.innerHTML = data;
+            });
+        }
+      
+        input.addEventListener('input', function () {
+          const query = this.value;
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            performSearch(query);
+          }, delay);
+        });
+      
+        button.addEventListener('click', function () {
+          const query = input.value;
+          performSearch(query);
+        });
+      </script>
+      
+      
 
 {% endblock %}
