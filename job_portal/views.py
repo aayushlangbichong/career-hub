@@ -6,8 +6,7 @@ from .models import JobSeekerProfile, CompanyProfile,JobPost
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-
+from .models import Application
 
 def get_role(user):
     try:
@@ -299,11 +298,31 @@ def manage_jobs(request):
     }
     return render(request, "company/manage_jobs.html", ctx)
 
-@csrf_exempt
 def apply_job(request, job_id):
     if request.method == "POST":
         message = request.POST.get("message")
-        messages.success(request, "Your application has been submitted.")
-        return redirect('job_details', job_id=job_id)
+        job = get_object_or_404(JobPost, id=job_id)
 
+        # Prevent duplicate applications
+        if Application.objects.filter(job=job, applicant=request.user).exists():
+            messages.error(request, "You've already applied for this job.")
+            return redirect('job_details', job_id=job_id)
+
+        Application.objects.create(
+            job=job,
+            applicant=request.user,
+            message=message
+        )
+
+        messages.success(request, "Application submitted successfully.")
+        return redirect('jobs')
+    
     return redirect('index')
+
+def applied(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    applications = Application.objects.filter(applicant=request.user).select_related('job', 'job__company')
+
+    return render(request, "applied.html", {"applications": applications})

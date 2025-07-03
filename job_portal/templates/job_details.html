@@ -19,7 +19,7 @@
             </div>        
           </div>
        </span>
-       <button class="px-4 py-2 bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">Apply for job</button>
+       <button class="px-4 py-2 applyButton bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">Apply for job</button>
       </div>
    
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -68,9 +68,11 @@
 
 </div>
 
-<div id="applyModal" class="fixed inset-0 bg-black opacity-80 hidden justify-center items-center z-0">
-  <!-- Modal Box -->
-  <div class="bg-white rounded-lg p-6 w-full z-50  max-w-md shadow-lg">
+<div id="applyModal" class="fixed inset-0 hidden justify-center items-center z-50">
+
+  <div class="absolute inset-0 bg-black opacity-60"></div>
+ 
+  <div class="relative bg-white rounded-lg p-6 w-full max-w-md z-10">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Apply for {{ job.title }}</h2>
     
     <form method="POST" action="{% url 'apply_job' job.id %}">
@@ -81,7 +83,7 @@
 
       <div class="mt-4 flex justify-end gap-3">
         <button type="button" onclick="closeModal()"
-          class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-sm text-gray-700">Cancel</button>
+          class="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-md text-sm text-white">Cancel</button>
         <button type="submit"
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Submit Application</button>
       </div>
@@ -89,9 +91,10 @@
   </div>
 </div>
 
+
 <script>
   const modal = document.getElementById('applyModal');
-  const applyBtn = document.querySelector('.bg-blue-600');
+  const applyBtn = document.querySelector('.applyButton');
 
   applyBtn.addEventListener('click', () => {
     modal.classList.remove('hidden');

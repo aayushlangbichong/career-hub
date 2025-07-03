@@ -19,6 +19,8 @@ urlpatterns = [
     path('job_details/<int:job_id>/', v.job_details, name="job_details"),
     path('search/', v.search_jobs, name='search_jobs'),
     path('apply/<int:job_id>/', v.apply_job, name='apply_job'),
+    path("applied/", v.applied, name="applied"),
+
 
     # Company pages
     path('dashboard/', v.dashboard, name="dashboard"),

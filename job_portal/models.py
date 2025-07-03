@@ -26,4 +26,13 @@ class JobPost(models.Model):
     working_hours=models.CharField(max_length=100, blank=True, null=True) 
 
     def __str__(self):
-        return f"{self.title} at {self.company.company_name}"       
+        return f"{self.title} at {self.company.company_name}"
+
+class Application(models.Model):
+    job = models.ForeignKey('JobPost', on_delete=models.CASCADE)
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.applicant.username} applied to {self.job.title}"          
