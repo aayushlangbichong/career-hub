@@ -8,11 +8,24 @@
   {% if applications %}
     <div class="space-y-4">
       {% for app in applications %}
-        <div class="border p-4 rounded-md bg-gray-50">
+        <div class="border p-4 rounded-md bg-gray-50 flex justify-between items-center">
+         <span>
           <h3 class="text-lg font-bold text-indigo-700">{{ app.job.title }}</h3>
           <p class="text-sm text-gray-600">{{ app.job.company.company_name }} — {{ app.job.location }}</p>
           <p class="text-sm mt-2"><strong>Your Message:</strong> {{ app.message }}</p>
           <p class="text-xs text-gray-400 mt-1">Applied {{ app.applied_at|naturaltime }}</p>
+         </span>
+          <span class="inline-block h-6 flex items-center px-2 py-1 rounded text-xs font-semibold
+              {% if app.status == 'approved' %}
+                bg-green-100 text-green-800
+              {% elif app.status == 'rejected' %}
+                bg-red-100 text-red-800
+              {% else %}
+                bg-yellow-100 text-yellow-800
+              {% endif %}
+          ">
+            {{ app.status|title }}
+          </span>
         </div>
       {% endfor %}
     </div>

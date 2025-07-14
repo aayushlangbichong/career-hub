@@ -29,10 +29,20 @@ class JobPost(models.Model):
         return f"{self.title} at {self.company.company_name}"
 
 class Application(models.Model):
-    job = models.ForeignKey('JobPost', on_delete=models.CASCADE)
-    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    applied_at = models.DateTimeField(auto_now_add=True)
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
 
-    def __str__(self):
-        return f"{self.applicant.username} applied to {self.job.title}"          
+    job = models.ForeignKey('JobPost', on_delete=models.CASCADE)
+    applicant = models.ForeignKey(JobSeekerProfile, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    applied_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+def __str__(self):
+        return f"{self.applicant.user.username} - {self.job.title}"
+
+
+

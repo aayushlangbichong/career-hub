@@ -19,7 +19,17 @@
             </div>        
           </div>
        </span>
-       <button class="px-4 py-2 applyButton bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">Apply for job</button>
+       
+      {% if has_applied %}
+        <button class="px-4 py-2 bg-gray-400 rounded-lg text-white cursor-not-allowed" disabled>
+          Already Applied
+        </button>
+      {% else %}
+        <button class="px-4 py-2 applyButton bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">
+          Apply for job
+        </button>
+      {% endif %}
+    
       </div>
    
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

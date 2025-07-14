@@ -27,6 +27,11 @@ urlpatterns = [
     path('post_jobs/', v.post_jobs, name="post_jobs"),
     path('company_profile/', v.company_profile, name="company_profile"),
     path('manage_jobs/', v.manage_jobs, name="manage_jobs"),
+    path('applicants/', v.applicants, name="applicants"),
+    path('jobs/<int:job_id>/edit/', v.edit_job, name='edit_job'),
+    path('jobs/<int:job_id>/delete/', v.delete_job, name='delete_job'),
+    path('application/<int:app_id>/status/<str:new_status>/', v.update_application_status, name='update_application_status'),
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 

@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from .models import Application
+from django.contrib.auth.decorators import login_required
 
 def get_role(user):
     try:
@@ -106,7 +107,7 @@ def dashboard(request):
         return redirect('index')
 
     company_profile = CompanyProfile.objects.get(user=request.user)
-    job_posts = JobPost.objects.filter(company=company_profile)
+    job_posts = JobPost.objects.filter(company=company_profile) 
 
     ctx = {
         "company_profile": company_profile,
@@ -114,6 +115,7 @@ def dashboard(request):
         "role": role
     }
     return render(request, "company/dashboard.html", ctx)
+
 
 def register(request):
     if request.user.is_authenticated:
@@ -273,7 +275,20 @@ def company_profile(request):
 
 def job_details(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
-    return render(request, 'job_details.html', {'job': job})
+    has_applied = False
+
+    if request.user.is_authenticated:
+        try:
+            profile = JobSeekerProfile.objects.get(user=request.user)
+            has_applied = Application.objects.filter(job=job, applicant=profile).exists()
+        except JobSeekerProfile.DoesNotExist:
+            pass
+
+    return render(request, 'job_details.html', {
+        'job': job,
+        'has_applied': has_applied
+    })
+    
 
 def search_jobs(request):
     query = request.GET.get('q', '')
@@ -288,41 +303,117 @@ def manage_jobs(request):
     company_profile = CompanyProfile.objects.get(user=request.user)
     job_posts = JobPost.objects.filter(company=company_profile)
     role = get_role(request.user)
-    jobs= JobPost.objects.all()
+   
 
     ctx = {
         "company_profile": company_profile,
         "job_posts": job_posts,
-        "jobs": jobs,
         "role": role
     }
     return render(request, "company/manage_jobs.html", ctx)
 
 def apply_job(request, job_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to apply.")
+        return redirect('login')
+
+  
+    job = get_object_or_404(JobPost, id=job_id)
+
+    try:
+        
+        profile = JobSeekerProfile.objects.get(user=request.user)
+    except JobSeekerProfile.DoesNotExist:
+        messages.error(request, "You must complete your job seeker profile to apply.")
+        return redirect('job_details', job_id=job_id)
+
+    
+    if Application.objects.filter(job=job, applicant=profile).exists():
+        messages.info(request, "You have already applied for this job.")
+        return redirect('job_details', job_id=job_id)
+
     if request.method == "POST":
         message = request.POST.get("message")
-        job = get_object_or_404(JobPost, id=job_id)
 
-        # Prevent duplicate applications
-        if Application.objects.filter(job=job, applicant=request.user).exists():
-            messages.error(request, "You've already applied for this job.")
-            return redirect('job_details', job_id=job_id)
-
+        
         Application.objects.create(
             job=job,
-            applicant=request.user,
+            applicant=profile,
             message=message
         )
 
         messages.success(request, "Application submitted successfully.")
-        return redirect('jobs')
-    
-    return redirect('index')
+        return redirect('applied')
+
+    return redirect('job_details', job_id=job_id)
+
 
 def applied(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    applications = Application.objects.filter(applicant=request.user).select_related('job', 'job__company')
+    try:
+        profile = JobSeekerProfile.objects.get(user=request.user)
+    except JobSeekerProfile.DoesNotExist:
+        messages.error(request, "Job seeker profile not found.")
+        return redirect('index')
+
+    applications = Application.objects.filter(applicant=profile).select_related('job', 'job__company')
 
     return render(request, "applied.html", {"applications": applications})
+
+
+def applicants(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    role = get_role(request.user)
+    if role != "employer":
+        messages.error(request, "Access denied.")
+        return redirect("index")
+
+    company = CompanyProfile.objects.get(user=request.user)
+    jobs = JobPost.objects.filter(company=company)
+    applications = Application.objects.filter(job__in=jobs).select_related('job', 'applicant')
+
+    context = {
+        "applications": applications,
+        "role": role
+    }
+    return render(request, "company/applicants.html", context)
+
+@login_required
+def edit_job(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id, company__user=request.user)
+
+    if request.method == "POST":
+        job.title = request.POST.get("title")
+        job.description = request.POST.get("description")
+        job.location = request.POST.get("location")
+        job.salary = request.POST.get("salary")
+        job.working_hours = request.POST.get("working_hours")
+        job.save()
+        messages.success(request, "Job updated successfully!")
+        return redirect("manage_jobs")
+
+    return render(request, "company/edit_job.html", {"job": job})
+
+
+def delete_job(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id, company__user=request.user)
+    job.delete()
+    messages.success(request, "Job deleted successfully!")
+    return redirect('manage_jobs')
+
+def update_application_status(request, app_id, new_status):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    application = get_object_or_404(Application, id=app_id, job__company__user=request.user)
+    if new_status in ['approved', 'rejected']:
+        application.status = new_status
+        application.save()
+        messages.success(request, f"Application marked as {new_status.capitalize()}.")
+    return redirect('applicants')
+
+   
