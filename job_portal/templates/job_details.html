@@ -37,31 +37,8 @@
             <!-- Job Description -->
             <div>
               <h2 class="text-xl font-semibold text-gray-800 mb-2">Job Description</h2>
-              <p class="text-gray-700 leading-relaxed">{{ job.description }}</p>
+              <div id="qrte"  class="text-gray-700 leading-relaxed">{{ job.description | safe }}</div>
             </div>
-        
-            <!-- Responsibilities (optional placeholder) -->
-            <div>
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">Key Responsibilities</h2>
-              <ul class="list-disc list-inside text-gray-700 space-y-1">
-                <li>Collaborate with product and engineering teams to define and implement solutions.</li>
-                <li>Deliver high-quality and maintainable code.</li>
-                <li>Participate in code reviews and design discussions.</li>
-                <li>Ensure UI/UX consistency across platforms.</li>
-              </ul>
-            </div>
-        
-            <!-- Skills & Experience -->
-            <div>
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">Skill & Experience</h2>
-              <ul class="list-disc list-inside text-gray-700 space-y-1">
-                <li>At least 2 years of experience in a related field.</li>
-                <li>Strong knowledge of modern web technologies.</li>
-                <li>Experience working in Agile teams.</li>
-                <li>Good communication and collaboration skills.</li>
-              </ul>
-            </div>
-      
           </div>
         
         <!-- Right: Job Overview -->
@@ -100,6 +77,64 @@
     </form>
   </div>
 </div>
+
+<style>
+  #qrte {
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    word-break: break-word;
+  }
+  #qrte h1, #qrte h2, #qrte h3, #qrte h4, #qrte h5, #qrte h6 {
+    font-weight: bold;
+    color: #1f2937;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+  }
+  #qrte p {
+    margin-bottom: 1em;
+  }
+  #qrte ul, #qrte ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+  }
+  #qrte ul {
+    list-style-type: disc;
+  }
+  #qrte ol {
+    list-style-type: decimal;
+  }
+  #qrte li {
+    margin-bottom: 0.25em;
+    line-height: 1.5;
+  }
+  #qrte strong {
+    font-weight: bold;
+  }
+  #qrte em {
+    font-style: italic;
+  }
+  #qrte a {
+    color: #2563eb;
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  #qrte blockquote {
+    border-left: 4px solid #a5b4fc;
+    padding-left: 1em;
+    color: #6b7280;
+    margin: 1em 0;
+    font-style: italic;
+    background: #f3f4f6;
+  }
+  #qrte img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1em 0;
+  }
+</style>
 
 
 <script>

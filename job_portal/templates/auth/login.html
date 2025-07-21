@@ -3,8 +3,8 @@
 
 {% block content %}
 <main class="flex h-screen">
-  <!-- Left Indigo Side -->
-  <section class="w-1/2 relative  bg-cover bg-center text-white flex items-center justify-center p-10 bg-indigo-600" style="background-image: url('{% static "images/sign-in.jpg" %}');">
+
+  <section class="w-1/2 relative hidden lg:flex  bg-cover bg-center text-white flex items-center justify-center p-10 bg-indigo-600" style="background-image: url('{% static "images/sign-in.jpg" %}');">
     <div class="bg-black opacity-60 inset-0 z-0 absolute"></div>
     <div class="text-center text-white z-10">
       <h1 class="text-4xl font-bold mb-4">Welcome Back</h1>
@@ -12,8 +12,8 @@
     </div>
   </section>
 
-  <!-- Right Login Form -->
-  <div class="w-1/2 flex items-center justify-center bg-white">
+
+  <div class="w-full lg:w-1/2 flex items-center justify-center bg-white">
     <div class="w-full max-w-md p-8">
       <h2 class="text-3xl font-semibold text-indigo-700 mb-6">Login</h2>
       <form method="post" class="space-y-4">

@@ -187,7 +187,7 @@ def post_jobs(request):
 
         if not all([title, description, location, salary, working_hours]):
             messages.error(request, "All fields are required.")
-            return render(request, "post_jobs.html")
+            return render(request, "company/post_jobs.html")
 
         company_profile = CompanyProfile.objects.get(user=request.user)
         job_post = JobPost(
@@ -363,7 +363,7 @@ def applied(request):
     return render(request, "applied.html", {"applications": applications})
 
 
-def applicants(request):
+def job_list(request):
     if not request.user.is_authenticated:
         return redirect("login")
 
@@ -374,13 +374,13 @@ def applicants(request):
 
     company = CompanyProfile.objects.get(user=request.user)
     jobs = JobPost.objects.filter(company=company)
-    applications = Application.objects.filter(job__in=jobs).select_related('job', 'applicant')
 
     context = {
-        "applications": applications,
-        "role": role
+        "role": role,
+        "jobs": jobs,
+        
     }
-    return render(request, "company/applicants.html", context)
+    return render(request, "company/job_list.html", context)
 
 @login_required
 def edit_job(request, job_id):
@@ -414,6 +414,17 @@ def update_application_status(request, app_id, new_status):
         application.status = new_status
         application.save()
         messages.success(request, f"Application marked as {new_status.capitalize()}.")
-    return redirect('applicants')
+    return redirect('view_job_applicants', job_id=application.job.id)
 
-   
+def view_job_applicants(request, job_id):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    job = get_object_or_404(JobPost, id=job_id, company__user=request.user)
+    applications = Application.objects.filter(job=job).select_related("applicant__user")
+
+    context = {
+        "job": job,
+        "applications": applications,
+    }
+    return render(request, "company/job_applicant.html", context)   

@@ -24,19 +24,26 @@
       <a href="{% url 'register' %}" class=" bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition">Register</a>
       {% endif %}
     </div>
-    <button id="hamburger" class="md:hidden p-2 focus:outline-none">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+    <button id="hamburger-btn" class="md:hidden relative p-2 focus:outline-none">
+    <svg class="w-6 h-6" id="hamburger-icon" fill="none" stroke="currentColor" stroke-width="2"
        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path stroke-linecap="round" stroke-linejoin="round"
           d="M4 6h16M4 12h16M4 18h16"></path>
     </svg>
+   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="close-icon" stroke-width="1.5" stroke="currentColor" class="hidden size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+
+
   </button>
 
-<nav id="mobileMenu" class="md:hidden flex flex-col bg-white p-4 space-y-2 shadow-md">
-  <a href="/" class="hover:text-blue-500">Home</a>
-  <a href="/applid" class="hover:text-blue-500">Applied Jobs</a>
-  <a href="/jobs" class="hover:text-blue-500">Jobs</a>
-  <a href="/contact" class="hover:text-blue-500">Profile</a>
+<nav id="mobileMenu" class="hidden flex flex-col absolute top-0 right-12 bg-white p-4 space-y-2 shadow-md">
+  <a href="{% url 'index' %}" class="hover:text-blue-500">Home</a>
+  <a href="{% url 'applied' %}" class="hover:text-blue-500">Applied Jobs</a>
+  <a href="{% url 'jobs' %}" class="hover:text-blue-500">Jobs</a>
+  <a href="{% url 'user_profile' %}" class="hover:text-blue-500">Profile</a>
+  <a href="{% url 'logout' %}" class="hover:text-blue-500">Logout</a>
+  
 </nav>
 
   </div>
@@ -44,11 +51,17 @@
 </header>
 
 <script>
-  const hamburger = document.getElementById('hamburger');
+  const hamburger = document.getElementById('hamburger-btn');
   const mobileMenu = document.getElementById('mobileMenu');
+  const closeIcon = document.getElementById('close-icon');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
 
   hamburger.addEventListener('click', () => {
     mobileMenu.classList.toggle('hidden');
+    hamburgerIcon.classList.toggle('hidden');
+    closeIcon.classList.toggle('hidden');
+
+
   });
 </script>
 

@@ -1,0 +1,16 @@
+{% extends "common/dashboard_layout.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="mx-auto bg-gray-100 min-h-screen p-6">
+  <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">Applicants for Your Job Posts</h2>
+
+  {% for job  in jobs %}
+  <div class="p-4 rounded flex justify-between">
+    <h3 class="text-lg font-bold text-gray-800">{{ job.title }}</h3>
+    <a href="{% url 'view_job_applicants' job.id %}" class="text-white bg-blue-500 text-sm p-2 rounded-lg inline-block">View Applicants</a>
+    
+  </div>
+  {% endfor %}
+
+{% endblock %}

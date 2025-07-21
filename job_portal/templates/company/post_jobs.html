@@ -1,57 +1,95 @@
-{% extends "common/dashboard_layout.html" %}
-{% load static %}
+{% extends "common/dashboard_layout.html" %} {% load static %} {% block content%}
 
-{% block content %}
-<main class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
-    <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md">
-      <h2 class="text-3xl font-semibold text-blue-600 mb-6 text-center">Post a New Job</h2>
-  
-      <form method="POST" action="" >
-        {% csrf_token %}
-        
-   
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-1">Job Title</label>
-          <input type="text" name="title" placeholder="e.g. Frontend Developer" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        </div>
-  
-    
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-1">Job Description</label>
-          <textarea name="description" rows="5" placeholder="Write the job responsibilities and requirements here..." required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-        </div>
-  
-    
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-1">Salary</label>
-          <input type="number" name="salary" placeholder="e.g. Rs 40000/month or Negotiable"
-                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        </div>
-  
-     
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-1">Working Hours</label>
-          <input type="text" name="working_hours" placeholder="e.g. 9 AM – 5 PM"
-                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        </div>
-  
+<main
+  class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4"
+>
+  <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-3xl font-semibold text-blue-600 mb-6 text-center">
+      Post a New Job
+    </h2>
 
-        <div class="mb-6">
-          <label class="block text-gray-700 font-medium mb-1">Location</label>
-          <input type="text" name="location" placeholder="e.g. Kathmandu, Nepal" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-1">Job Title</label>
+        <input
+          type="text"
+          name="title"
+          placeholder="e.g. Frontend Developer"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-1">Job Description</label>
+        <div id="editor" style="height: 200px;">
+          <p><br /></p>
         </div>
-  
- 
-        <button type="submit"
-                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition">
-          Post Job
-        </button>
-      </form>
-    </div>
-  </main>
-  
+        <input type="hidden" name="description" id="description-input" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-1">Salary</label>
+        <input
+          type="number"
+          name="salary"
+          placeholder="e.g. Rs 40000/month or Negotiable"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-1"
+          >Working Hours</label
+        >
+        <input
+          type="text"
+          name="working_hours"
+          placeholder="e.g. 9 AM – 5 PM"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-gray-700 font-medium mb-1">Location</label>
+        <input
+          type="text"
+          name="location"
+          placeholder="e.g. Kathmandu, Nepal"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition"
+      >
+        Post Job
+      </button>
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<link
+  href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+  rel="stylesheet"
+/>
+
+
+<script>
+  const quill = new Quill("#editor", {
+    theme: "snow",
+    placeholder: "Write the job description here...",
+  });
+  const form = document.querySelector("form");
+  const descInput = document.getElementById("description-input");
+  form.addEventListener("submit", function (e) {
+    descInput.value = quill.root.innerHTML;
+  });
+</script>
+
 {% endblock %}
-
