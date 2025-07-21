@@ -73,23 +73,4 @@
   </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-<link
-  href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
-  rel="stylesheet"
-/>
-
-
-<script>
-  const quill = new Quill("#editor", {
-    theme: "snow",
-    placeholder: "Write the job description here...",
-  });
-  const form = document.querySelector("form");
-  const descInput = document.getElementById("description-input");
-  form.addEventListener("submit", function (e) {
-    descInput.value = quill.root.innerHTML;
-  });
-</script>
-
 {% endblock %}

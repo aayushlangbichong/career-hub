@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 class JobSeekerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='job_seeker_profile')
@@ -23,7 +24,8 @@ class JobPost(models.Model):
     description = models.TextField()
     location = models.CharField(max_length=255, blank=True, null=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    working_hours=models.CharField(max_length=100, blank=True, null=True) 
+    working_hours=models.CharField(max_length=100, blank=True, null=True)
+    posted = models.DateTimeField(default=timezone.now) 
 
     def __str__(self):
         return f"{self.title} at {self.company.company_name}"

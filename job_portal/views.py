@@ -183,6 +183,7 @@ def post_jobs(request):
         description = request.POST.get("description")
         location = request.POST.get("location")
         salary = request.POST.get("salary")
+        
         working_hours = request.POST.get("working_hours")
 
         if not all([title, description, location, salary, working_hours]):

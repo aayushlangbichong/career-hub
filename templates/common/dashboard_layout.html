@@ -10,9 +10,67 @@
       href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
       rel="stylesheet"
     />
+
     <style type="text/tailwindcss">
       @theme {
         --color-clifford: #da373d;
+      }
+    </style>
+    <style>
+      #qrte {
+        font-size: 1rem;
+        color: #374151;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        word-break: break-word;
+      }
+      #qrte h1, #qrte h2, #qrte h3, #qrte h4, #qrte h5, #qrte h6 {
+        font-weight: bold;
+        color: #1f2937;
+        margin-top: 1.2em;
+        margin-bottom: 0.5em;
+      }
+      #qrte p {
+        margin-bottom: 1em;
+      }
+      #qrte ul, #qrte ol {
+        margin-left: 1.5em;
+        margin-bottom: 1em;
+      }
+      #qrte ul {
+        list-style-type: disc;
+      }
+      #qrte ol {
+        list-style-type: decimal;
+      }
+      #qrte li {
+        margin-bottom: 0.25em;
+        line-height: 1.5;
+      }
+      #qrte strong {
+        font-weight: bold;
+      }
+      #qrte em {
+        font-style: italic;
+      }
+      #qrte a {
+        color: #2563eb;
+        text-decoration: underline;
+        word-break: break-all;
+      }
+      #qrte blockquote {
+        border-left: 4px solid #a5b4fc;
+        padding-left: 1em;
+        color: #6b7280;
+        margin: 1em 0;
+        font-style: italic;
+        background: #f3f4f6;
+      }
+      #qrte img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1em 0;
       }
     </style>
   </head>
@@ -25,5 +83,28 @@
     </main>
     {% include 'ui/alert.html'%}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<link
+  href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+  rel="stylesheet"
+/>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const editor = document.getElementById("editor");
+    const descInput = document.getElementById("description-input");
+    const form = editor && descInput ? editor.closest("form") : null;
+    if (editor && descInput && form) {
+      window.quill = new Quill("#editor", {
+        theme: "snow",
+        placeholder: "Write the job description here...",
+      });
+      form.addEventListener("submit", function () {
+        descInput.value = window.quill.root.innerHTML;
+      });
+    }
+  });
+</script>
   </body>
 </html>
