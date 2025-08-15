@@ -8,6 +8,8 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from .models import Application
 from django.contrib.auth.decorators import login_required
+import re
+from django.core.exceptions import ValidationError
 
 def get_role(user):
     try:
@@ -116,52 +118,77 @@ def dashboard(request):
     }
     return render(request, "company/dashboard.html", ctx)
 
-
 def register(request):
     if request.user.is_authenticated:
         return redirect('index')
     ctx = {}
 
     if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
-        role=request.POST.get("user_type")
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+        confirm_password = request.POST.get("confirm_password", "")
+        role = request.POST.get("user_type", "")
 
-        if not all([first_name, last_name, username , password, confirm_password,role]):
+        # Check required fields
+        if not all([first_name, last_name, username, password, confirm_password, role]):
             messages.error(request, "All fields are required.")
             return render(request, "auth/register.html", ctx)
 
+        # Username length
+        if len(username) < 4 or len(username) > 20:
+            messages.error(request, "Username must be between 4 and 20 characters.")
+            return render(request, "auth/register.html", ctx)
+
+        # Password length
+        if len(password) < 8 or len(password) > 20:
+            messages.error(request, "Password must be between 8 and 20 characters.")
+            return render(request, "auth/register.html", ctx)
+
+        # Password complexity
+        if not re.search(r"[A-Z]", password):
+            messages.error(request, "Password must contain at least one uppercase letter.")
+            return render(request, "auth/register.html", ctx)
+        if not re.search(r"[a-z]", password):
+            messages.error(request, "Password must contain at least one lowercase letter.")
+            return render(request, "auth/register.html", ctx)
+        if not re.search(r"\d", password):
+            messages.error(request, "Password must contain at least one number.")
+            return render(request, "auth/register.html", ctx)
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+            messages.error(request, "Password must contain at least one special character (!@#$%^&* etc.).")
+            return render(request, "auth/register.html", ctx)
+
+        # Confirm password
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return render(request, "auth/register.html", ctx)
 
+        # Username already exists
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
             return render(request, "auth/register.html", ctx)
 
-     
+        # Create User
         user = User.objects.create_user(
             username=username,
             password=password,
             first_name=first_name,
             last_name=last_name,
         )
-        
+
+        # Create related profile
         if role == "job_seeker":
-            profile = JobSeekerProfile(user=user)
-            profile.save()
+            JobSeekerProfile.objects.create(user=user)
         else:
-            profile = CompanyProfile(user=user)
-            profile.save()
-        user.save()
+            CompanyProfile.objects.create(user=user)
 
         messages.success(request, "Account created successfully! Please login.")
         return redirect("login")
 
     return render(request, "auth/register.html", ctx)
+
 
 def logout(request):
     lgout(request)
