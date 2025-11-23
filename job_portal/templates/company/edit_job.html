@@ -8,20 +8,22 @@
   <div class="space-y-4">
     <label class="block text-gray-700 font-medium mb-1">Job Title</label>
     <input type="text" name="title" value="{{ job.title }}" class="w-full p-2 border rounded" placeholder="Title">
-      <div class="mb-4">
-        <label class="block text-gray-700 font-medium mb-1">Job Description</label>
-        <div id="editor" style="height: 200px;">
-          {{job.description|safe}}
-        </div>
-        <input type="hidden" name="description" id="description-input" />
+    <div class="mb-4">
+      <label class="block text-gray-700 font-medium mb-1">Job Description</label>
+      <div id="editor" style="height: 200px;">
+        {{job.description|safe}}
       </div>
+      <input type="hidden" name="description" id="description-input" />
+    </div>
 
-    <label class="block text-gray-700 font-medium mb-1">Location</label>  
-    <input type="text" name="location" value="{{ job.location }}" class="w-full p-2 border rounded" placeholder="Location">
+    <label class="block text-gray-700 font-medium mb-1">Work Type</label>
+    <input type="text" name="work_type" value="{{ job.work_type }}" class="w-full p-2 border rounded"
+      placeholder="Work Type">
     <label class="block text-gray-700 font-medium mb-1">Salary</label>
     <input type="number" name="salary" value="{{ job.salary }}" class="w-full p-2 border rounded" placeholder="Salary">
     <label class="block text-gray-700 font-medium mb-1">Working Hours</label>
-    <input type="text" name="working_hours" value="{{ job.working_hours }}" class="w-full p-2 border rounded" placeholder="Working Hours">
+    <input type="text" name="working_hours" value="{{ job.working_hours }}" class="w-full p-2 border rounded"
+      placeholder="Working Hours">
     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update Job</button>
   </div>
 </form>

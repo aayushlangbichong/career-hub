@@ -4,65 +4,68 @@
 
 {% block content %}
 <div class="max-w-6xl mx-auto p-6 mt-10 gap-6">
-   <!-- Job Header -->
-      <div class="flex items-start justify-between space-x-4">
-       <span class="flex items-center space-x-4">
-        <div class="w-16 h-16 bg-indigo-600 text-white rounded-lg flex items-center justify-center text-xl font-bold">
-            {{ job.company.company_name|slice:":1" }}
-          </div>
-          <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">{{ job.title }}</h1>
-            <div class="flex flex-wrap gap-3 text-sm text-gray-500 mt-2">
-              <span class="flex items-center gap-1"><i class="fas fa-building"></i> {{ job.company.company_name }}</span>
-              <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
-              <span class="flex items-center gap-1"><i class="fas fa-clock"></i> {{ job.working_hours }}</span>
-            </div>        
-          </div>
-       </span>
-       
-      {% if has_applied %}
-        <button class="px-4 py-2 bg-gray-400 rounded-lg text-white cursor-not-allowed" disabled>
-          Already Applied
-        </button>
-      {% else %}
-        <button class="px-4 py-2 applyButton bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">
-          Apply for job
-        </button>
-      {% endif %}
-    
+  <!-- Job Header -->
+  <div class="flex items-start justify-between space-x-4">
+    <span class="flex items-center space-x-4">
+      <div class="w-16 h-16 bg-indigo-600 text-white rounded-lg flex items-center justify-center text-xl font-bold">
+        {{ job.company.company_name|slice:":1" }}
       </div>
-   
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <div class="space-y-4 col-span-2">
-            <!-- Job Description -->
-            <div>
-              <h2 class="text-xl font-semibold text-gray-800 mb-2">Job Description</h2>
-              <div id="qrte"  class="text-gray-700 leading-relaxed">{{ job.description | safe }}</div>
-            </div>
-          </div>
-          
-        <!-- Job Overview -->
-        <div class="bg-blue-50 border rounded-lg p-4 space-y-4 h-52 shadow-sm">
-          <h3 class="text-lg font-semibold text-gray-800">Job Overview</h3>
-          <ul class="text-sm text-gray-600 space-y-2">
-            <li><strong>Posted at:</strong> {{ job.posted|naturaltime }}</li>
-            <li><strong>Location:</strong> {{ job.location }}</li>
-            <li><strong>Job Title:</strong> {{ job.title }}</li>
-            <li><strong>Working Hours:</strong> {{ job.working_hours }}</li>
-            <li><strong>Salary:</strong> Rs.{{ job.salary|floatformat:0|intcomma }}/month</li>
-          </ul>
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">{{ job.title }}</h1>
+        <div class="flex flex-wrap gap-3 text-sm text-gray-500 mt-2">
+          <span class="flex items-center gap-1"><i class="fas fa-building"></i> {{ job.company.company_name }}</span>
+
+          <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i>
+            {{ job.company.company_location }}</span>
+          <span class="flex items-center gap-1"><i class="fas fa-clock"></i> {{ job.working_hours }}</span>
         </div>
+      </div>
+    </span>
+
+    {% if has_applied %}
+    <button class="px-4 py-2 bg-gray-400 rounded-lg text-white cursor-not-allowed" disabled>
+      Already Applied
+    </button>
+    {% else %}
+    <button
+      class="px-4 py-2 applyButton bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 text-white mr-55">
+      Apply for job
+    </button>
+    {% endif %}
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+    <div class="space-y-4 col-span-2">
+      <!-- Job Description -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Job Description</h2>
+        <div id="qrte" class="text-gray-700 leading-relaxed">{{ job.description | safe }}</div>
+      </div>
     </div>
+
+    <!-- Job Overview -->
+    <div class="bg-blue-50 border rounded-lg p-4 space-y-4 h-52 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-800">Job Overview</h3>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li><strong>Posted at:</strong> {{ job.posted|naturaltime }}</li>
+        <li><strong>Work type:</strong> {{ job.work_type }}</li>
+        <li><strong>Job Title:</strong> {{ job.title }}</li>
+        <li><strong>Working Hours:</strong> {{ job.working_hours }}</li>
+        <li><strong>Salary:</strong> Rs.{{ job.salary|floatformat:0|intcomma }}/month</li>
+      </ul>
+    </div>
+  </div>
 
 </div>
 
 <div id="applyModal" class="fixed inset-0 hidden justify-center items-center z-50">
 
   <div class="absolute inset-0 bg-black opacity-60"></div>
- 
+
   <div class="relative bg-white rounded-lg p-6 w-full max-w-md z-10">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Apply for {{ job.title }}</h2>
-    
+
     <form method="POST" action="{% url 'apply_job' job.id %}">
       {% csrf_token %}
       <label class="block text-gray-700 text-sm mb-1">Message to Employer</label>
@@ -72,8 +75,8 @@
       <div class="mt-4 flex justify-end gap-3">
         <button type="button" onclick="closeModal()"
           class="px-4 py-2 bg-gray-400 hover:bg-gray-500 rounded-md text-sm text-white">Cancel</button>
-        <button type="submit"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Submit Application</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Submit
+          Application</button>
       </div>
     </form>
   </div>
@@ -87,40 +90,56 @@
     margin-bottom: 1.5rem;
     word-break: break-word;
   }
-  #qrte h1, #qrte h2, #qrte h3, #qrte h4, #qrte h5, #qrte h6 {
+
+  #qrte h1,
+  #qrte h2,
+  #qrte h3,
+  #qrte h4,
+  #qrte h5,
+  #qrte h6 {
     font-weight: bold;
     color: #1f2937;
     margin-top: 1.2em;
     margin-bottom: 0.5em;
   }
+
   #qrte p {
     margin-bottom: 1em;
   }
-  #qrte ul, #qrte ol {
+
+  #qrte ul,
+  #qrte ol {
     margin-left: 1.5em;
     margin-bottom: 1em;
   }
+
   #qrte ul {
     list-style-type: disc;
   }
+
   #qrte ol {
     list-style-type: decimal;
   }
+
   #qrte li {
     margin-bottom: 0.25em;
     line-height: 1.5;
   }
+
   #qrte strong {
     font-weight: bold;
   }
+
   #qrte em {
     font-style: italic;
   }
+
   #qrte a {
     color: #2563eb;
     text-decoration: underline;
     word-break: break-all;
   }
+
   #qrte blockquote {
     border-left: 4px solid #a5b4fc;
     padding-left: 1em;
@@ -129,6 +148,7 @@
     font-style: italic;
     background: #f3f4f6;
   }
+
   #qrte img {
     max-width: 100%;
     height: auto;
@@ -155,4 +175,3 @@
 
 
 {% endblock %}
-

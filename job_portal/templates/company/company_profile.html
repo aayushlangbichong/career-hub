@@ -10,18 +10,22 @@
     <form method="POST" enctype="multipart/form-data" class="space-y-5">
       {% csrf_token %}
 
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Company Name</label>
-          <input type="text" name="company_name" value="{{ company_profile.company_name }}"
-                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Company Name</label>
+        <input type="text" name="company_name" value="{{ company_profile.company_name }}"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
 
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Company Description</label>
-          <textarea name="company_description" rows="4"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >{{ company_profile.company_description }}</textarea>
-        </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Company Description</label>
+        <textarea name="company_description" rows="4"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ company_profile.company_description }}</textarea>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Location</label>
+        <input name="company_location" value="{{ company_profile.company_location }}"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
 
       <div>
         <button type="submit"

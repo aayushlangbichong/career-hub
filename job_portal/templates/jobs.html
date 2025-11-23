@@ -7,103 +7,101 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Search Section -->
-    <div class="bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-8 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="Job title, keywords, or company" id="searchInput" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+<!-- Search Section -->
+<div class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-8 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Job title, keywords, or company" id="searchInput"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium"
+                id="searchButton">Search</button>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex gap-4">
+            <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                <option>Sort by (default)</option>
+                <option>Sort by Salary</option>
+                <option>Sort by Location</option>
+
+            </select>
+
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="searchResults">
+        <!-- Job Cards -->
+        {% for job in jobs %}
+        <a href="{% url 'job_details' job.id %}">
+
+            <div
+                class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow flex w-full items-center">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white text-lg font-bold">{{ job.company.company_name|slice:":1" }}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+                            <div class="flex items-center justify-between gap-6 text-xs text-gray-500 mt-1">
+                                <span class="flex items-center justify-center whitespace-no-wrap">
+                                    <i class="fas fa-building mr-1"></i>
+                                    {{ job.company.company_name }}</span>
+                                <span class="flex items-center justify-center whitespace-no-wrap">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ job.company.company_location }}</span>
+                                <span class="flex items-center justify-center gap-1 whitespace-no-wrap">
+                                    <i class="fa-solid fa-money-bill"></i>
+                                    Rs.{{ job.salary|floatformat:0|intcomma }}/monthly</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium" id="searchButton">Search</button>
             </div>
-        </div>
+        </a>
+        {% endfor %}
     </div>
+</div>
 
-    <!-- Filters -->
-    <div class="bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-wrap gap-4">
-                <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option>Salary estimate</option>
-                </select>
-            </div>
-        </div>
-    </div>    
+<script>
+    let debounceTimer;
+    const delay = 300;
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex gap-4">
-                <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm">
-                    <option>Sort by (default)</option>
-                    <option>Sort by Salary</option>
-                    <option>Sort by Location</option>
+    const input = document.getElementById('searchInput');
+    const button = document.getElementById('searchButton');
+    const resultsContainer = document.getElementById('searchResults');
 
-                </select>
-               
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="searchResults">
-            <!-- Job Cards -->  
-            {% for job in jobs %} 
-            <a href="{% url 'job_details' job.id %}">
-              
-            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow flex w-full items-center">
-              <div class="flex justify-between items-start">
-                  <div class="flex items-center space-x-4">
-                   <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center">
-                          <span class="text-white text-lg font-bold">{{ job.company.company_name|slice:":1" }}</span>
-                      </div>
-                      <div>
-                          <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
-                          <div class="flex items-center justify-center space-x-4 text-xs text-gray-500 mt-1">
-                              <span class="flex items-center justify-center"><i class="fas fa-building mr-1"></i>{{ job.company }}</span>
-                              <span class="flex items-center justify-center"><i class="fas fa-map-marker-alt mr-1"></i>{{ job.location }}</span>
-                              <span class="flex items-center justify-center gap-1"><i class="fa-solid fa-money-bill"></i> Rs.{{ job.salary|floatformat:0|intcomma }}/monthly</span>
-                          </div>
-                      </div>
-                  </div>       
-              </div> 
-            </div>
-            </a>
-            {% endfor %}
-        </div>    
-    </div>
-
-    <script>
-        let debounceTimer;
-        const delay = 300;
-      
-        const input = document.getElementById('searchInput');
-        const button = document.getElementById('searchButton');
-        const resultsContainer = document.getElementById('searchResults');
-      
-        function performSearch(query) {
-          fetch(`/search/?q=${encodeURIComponent(query)}`)
+    function performSearch(query) {
+        fetch(`/search/?q=${encodeURIComponent(query)}`)
             .then(response => response.text())
             .then(data => {
-              resultsContainer.innerHTML = data;
+                resultsContainer.innerHTML = data;
             });
-        }
-      
-        input.addEventListener('input', function () {
-          const query = this.value;
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(() => {
+    }
+
+    input.addEventListener('input', function () {
+        const query = this.value;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
             performSearch(query);
-          }, delay);
-        });
-      
-        button.addEventListener('click', function () {
-          const query = input.value;
-          performSearch(query);
-        });
-      </script>
-      
-      
+        }, delay);
+    });
+
+    button.addEventListener('click', function () {
+        const query = input.value;
+        performSearch(query);
+    });
+</script>
+
+
 
 {% endblock %}

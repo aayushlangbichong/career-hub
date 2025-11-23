@@ -9,7 +9,11 @@ from django.http import HttpResponse
 from .models import Application
 from django.contrib.auth.decorators import login_required
 import re
-from django.core.exceptions import ValidationError
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from .utils.resume_parser import extract_text_from_resume
+
+
 
 def get_role(user):
     try:
@@ -131,22 +135,22 @@ def register(request):
         confirm_password = request.POST.get("confirm_password", "")
         role = request.POST.get("user_type", "")
 
-        # Check required fields
+       
         if not all([first_name, last_name, username, password, confirm_password, role]):
             messages.error(request, "All fields are required.")
             return render(request, "auth/register.html", ctx)
 
-        # Username length
+        
         if len(username) < 4 or len(username) > 20:
             messages.error(request, "Username must be between 4 and 20 characters.")
             return render(request, "auth/register.html", ctx)
 
-        # Password length
+       
         if len(password) < 8 or len(password) > 20:
             messages.error(request, "Password must be between 8 and 20 characters.")
             return render(request, "auth/register.html", ctx)
 
-        # Password complexity
+       
         if not re.search(r"[A-Z]", password):
             messages.error(request, "Password must contain at least one uppercase letter.")
             return render(request, "auth/register.html", ctx)
@@ -160,17 +164,17 @@ def register(request):
             messages.error(request, "Password must contain at least one special character (!@#$%^&* etc.).")
             return render(request, "auth/register.html", ctx)
 
-        # Confirm password
+        
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return render(request, "auth/register.html", ctx)
 
-        # Username already exists
+       
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
             return render(request, "auth/register.html", ctx)
 
-        # Create User
+       
         user = User.objects.create_user(
             username=username,
             password=password,
@@ -178,7 +182,7 @@ def register(request):
             last_name=last_name,
         )
 
-        # Create related profile
+      
         if role == "job_seeker":
             JobSeekerProfile.objects.create(user=user)
         else:
@@ -188,7 +192,6 @@ def register(request):
         return redirect("login")
 
     return render(request, "auth/register.html", ctx)
-
 
 def logout(request):
     lgout(request)
@@ -208,12 +211,11 @@ def post_jobs(request):
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
-        location = request.POST.get("location")
+        work_type = request.POST.get("work_type")
         salary = request.POST.get("salary")
-        
         working_hours = request.POST.get("working_hours")
 
-        if not all([title, description, location, salary, working_hours]):
+        if not all([title, description, work_type, salary, working_hours]):
             messages.error(request, "All fields are required.")
             return render(request, "company/post_jobs.html")
 
@@ -222,7 +224,7 @@ def post_jobs(request):
             company=company_profile,
             title=title,
             description=description,
-            location=location,
+            work_type=work_type,
             salary=salary,
             working_hours=working_hours
         )
@@ -290,6 +292,7 @@ def company_profile(request):
     if request.method == "POST":
         company_profile.company_name = request.POST.get("company_name")
         company_profile.company_description = request.POST.get("company_description")
+        company_profile.company_location=request.POST.get("company_location")
         if request.FILES.get("logo"):
             company_profile.logo = request.FILES["logo"]
         company_profile.save()
@@ -417,7 +420,7 @@ def edit_job(request, job_id):
     if request.method == "POST":
         job.title = request.POST.get("title")
         job.description = request.POST.get("description")
-        job.location = request.POST.get("location")
+        job.work_type = request.POST.get("work_type")
         job.salary = request.POST.get("salary")
         job.working_hours = request.POST.get("working_hours")
         job.save()
@@ -444,6 +447,242 @@ def update_application_status(request, app_id, new_status):
         messages.success(request, f"Application marked as {new_status.capitalize()}.")
     return redirect('view_job_applicants', job_id=application.job.id)
 
+def clean_text(text):
+    if not text:
+        return ""
+    text = text.lower()  # lowercase
+    text = re.sub(r'\d+', '', text)  # remove numbers
+    text = re.sub(r'[^\w\s]', '', text)  # remove punctuation
+    text = re.sub(r'\s+', ' ', text).strip()  # remove extra spaces
+    return text
+
+
+# Enhanced aggressive matching algorithm for higher scores
+
+def enhanced_text_preprocessing(text):
+    """Enhanced text preprocessing with better cleaning and normalization"""
+    if not text:
+        return ""
+    
+    text = text.lower()
+    
+    # More comprehensive technology normalization
+    tech_mappings = {
+        # JavaScript variations
+        r'\bjs\b': 'javascript',
+        r'\breactjs\b': 'react',
+        r'\bnodejs\b': 'node javascript',
+        r'\bnode\.js\b': 'node javascript',
+        r'\bvuejs\b': 'vue javascript',
+        r'\bangularjs\b': 'angular javascript',
+        
+        # Database variations
+        r'\bmongodb\b': 'mongo database nosql',
+        r'\bmysql\b': 'sql database relational',
+        r'\bpostgresql\b': 'postgres sql database relational',
+        r'\bpostgres\b': 'postgresql sql database',
+        
+        # Programming languages
+        r'\bc\+\+': 'cpp programming',
+        r'\bc#': 'csharp dotnet programming',
+        r'\b\.net\b': 'dotnet csharp microsoft',
+        
+        # Cloud and DevOps
+        r'\baws\b': 'amazon web services cloud',
+        r'\bgcp\b': 'google cloud platform',
+        r'\bazure\b': 'microsoft cloud',
+        r'\bdevops\b': 'development operations deployment',
+        
+        # Web technologies
+        r'\bhtml5\b': 'html web markup',
+        r'\bcss3\b': 'css styling web',
+        r'\brestful\b': 'rest api web services',
+        r'\bgraphql\b': 'graph query language api',
+        
+        # Frameworks and tools
+        r'\bbootstrap\b': 'css framework responsive',
+        r'\btailwind\b': 'css framework utility',
+        r'\bwebpack\b': 'bundler build tool',
+        r'\bvite\b': 'build tool bundler',
+        
+        # Methodologies
+        r'\bai/ml\b': 'artificial intelligence machine learning',
+        r'\bui/ux\b': 'user interface user experience design',
+        r'\bfull.?stack\b': 'fullstack frontend backend',
+        r'\bfront.?end\b': 'frontend user interface',
+        r'\bback.?end\b': 'backend server side',
+        
+        # Testing
+        r'\btdd\b': 'test driven development testing',
+        r'\bbdd\b': 'behavior driven development testing',
+    }
+    
+    for pattern, replacement in tech_mappings.items():
+        text = re.sub(pattern, replacement, text)
+    
+    # Remove punctuation but preserve important technical characters
+    text = re.sub(r'[^\w\s+#.-]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
+
+def extract_comprehensive_skills(text):
+    """Extract skills with weighted importance"""
+    if not text:
+        return {}
+    
+    # Define skill categories with importance weights
+    skill_categories = {
+        'core_programming': {
+            'weight': 3.0,
+            'pattern': r'\b(react|javascript|typescript|python|java|node|angular|vue)\b'
+        },
+        'web_technologies': {
+            'weight': 2.5,
+            'pattern': r'\b(html|css|sass|less|bootstrap|tailwind|responsive)\b'
+        },
+        'databases': {
+            'weight': 2.0,
+            'pattern': r'\b(mysql|postgresql|mongodb|redis|elasticsearch|sql|database|nosql)\b'
+        },
+        'tools_frameworks': {
+            'weight': 2.0,
+            'pattern': r'\b(webpack|vite|jest|cypress|docker|git|github|gitlab)\b'
+        },
+        'cloud_devops': {
+            'weight': 2.0,
+            'pattern': r'\b(aws|azure|gcp|docker|kubernetes|jenkins|devops|ci/cd)\b'
+        },
+        'api_architecture': {
+            'weight': 2.5,
+            'pattern': r'\b(rest|restful|graphql|api|microservices|json)\b'
+        },
+        'state_management': {
+            'weight': 2.5,
+            'pattern': r'\b(redux|context|state|vuex|mobx)\b'
+        },
+        'testing': {
+            'weight': 1.8,
+            'pattern': r'\b(jest|cypress|testing|unit|integration|tdd|test)\b'
+        },
+        'methodologies': {
+            'weight': 1.5,
+            'pattern': r'\b(agile|scrum|kanban|waterfall|methodology)\b'
+        },
+        'soft_skills': {
+            'weight': 1.0,
+            'pattern': r'\b(leadership|communication|teamwork|problem.solving|analytical|management)\b'
+        }
+        
+    }
+    
+    extracted_skills = {}
+    text_lower = text.lower()
+    
+    for category, config in skill_categories.items():
+        matches = re.findall(config['pattern'], text_lower)
+        if matches:
+            extracted_skills[category] = {
+                'skills': list(set(matches)),
+                'weight': config['weight']
+            }
+    
+    return extracted_skills
+
+def calculate_weighted_skill_match(job_text, resume_text):
+    """Calculate skill matching with category weights"""
+    job_skills = extract_comprehensive_skills(job_text)
+    resume_skills = extract_comprehensive_skills(resume_text)
+    
+    if not job_skills:
+        return 0.0
+    
+    total_job_weight = 0
+    matched_weight = 0
+    
+    for category, job_data in job_skills.items():
+        category_weight = job_data['weight']
+        job_category_skills = set(job_data['skills'])
+        total_job_weight += category_weight
+        
+        if category in resume_skills:
+            resume_category_skills = set(resume_skills[category]['skills'])
+            overlap = job_category_skills.intersection(resume_category_skills)
+            
+            if overlap:
+                match_ratio = len(overlap) / len(job_category_skills)
+                matched_weight += category_weight * match_ratio
+    
+    return matched_weight / total_job_weight if total_job_weight > 0 else 0.0
+
+def calculate_enhanced_similarity(job_text, resume_text):
+    """Enhanced similarity calculation with aggressive scoring"""
+    
+    # Preprocess texts
+    job_clean = enhanced_text_preprocessing(job_text)
+    resume_clean = enhanced_text_preprocessing(resume_text)
+    
+    if not job_clean or not resume_clean:
+        return 0.0
+    
+    # 1. TF-IDF Cosine Similarity
+    try:
+        tfidf = TfidfVectorizer(
+            stop_words='english',
+            ngram_range=(1, 3),  
+            max_features=8000,
+            sublinear_tf=True,
+            min_df=1,
+            max_df=0.95
+        )
+        
+        tfidf_matrix = tfidf.fit_transform([job_clean, resume_clean])
+        cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+    except Exception as e:
+        print(f"TF-IDF error: {e}")
+        cosine_sim = 0.0
+    
+    weighted_skill_score = calculate_weighted_skill_match(job_text, resume_text)
+    
+    job_words = set(job_clean.split())
+    resume_words = set(resume_clean.split())
+    
+    if len(job_words) > 0:
+        word_overlap = len(job_words.intersection(resume_words)) / len(job_words)
+    else:
+        word_overlap = 0.0
+    
+    base_score = (cosine_sim * 0.3) + (weighted_skill_score * 0.7)
+    
+    # Apply moderate boosts (toned down from aggressive version)
+    if weighted_skill_score >= 0.7:
+        final_score = min(base_score * 1.35, 0.95) 
+    elif weighted_skill_score >= 0.5:
+        final_score = min(base_score * 1.25, 0.90) 
+    elif weighted_skill_score >= 0.3:
+        final_score = min(base_score * 1.15, 0.85) 
+    elif weighted_skill_score >= 0.1:
+        final_score = min(base_score * 1.05, 0.75) 
+    else:
+        final_score = base_score
+    
+    # Additional boost for high word overlap (reduced)
+    if word_overlap >= 0.3:
+        final_score = min(final_score * 1.08, 0.95)  # Smaller boost, cap at 95%
+    
+    # Minimum score boost for any technical content
+    if cosine_sim > 0.1 and weighted_skill_score > 0.1:
+        final_score = max(final_score, 0.25)  
+    
+    print(f"Cosine similarity: {cosine_sim:.3f}")
+    print(f"Weighted skill score: {weighted_skill_score:.3f}")
+    print(f"Word overlap: {word_overlap:.3f}")
+    print(f"Base score: {base_score:.3f}")
+    print(f"Final score: {final_score:.3f}")
+    
+    return final_score
+
+@login_required
 def view_job_applicants(request, job_id):
     if not request.user.is_authenticated:
         return redirect("login")
@@ -451,8 +690,37 @@ def view_job_applicants(request, job_id):
     job = get_object_or_404(JobPost, id=job_id, company__user=request.user)
     applications = Application.objects.filter(job=job).select_related("applicant__user")
 
-    context = {
+    scored_apps = []
+    for app in applications:
+        resume_text = ""
+
+        # Extract resume text
+        if app.applicant.resume:
+            resume_text = extract_text_from_resume(app.applicant.resume)
+
+        # Append skills field if available
+        if app.applicant.skills:
+            resume_text += " " + app.applicant.skills
+
+        print(f"\n--- Processing application for {app.applicant.user.username} ---")
+        print(f"Job description length: {len(job.description)}")
+        print(f"Resume text length: {len(resume_text)}")
+        
+        # Calculate enhanced similarity
+        similarity_score = calculate_enhanced_similarity(job.description, resume_text)
+        
+        final_percentage = round(similarity_score * 100, 1)
+        print(f"Final similarity score: {final_percentage}%")
+
+        scored_apps.append({
+            "app": app,
+            "score": final_percentage
+        })
+
+    # Sort highest to lowest score
+    scored_apps.sort(key=lambda x: x["score"], reverse=True)
+
+    return render(request, "company/job_applicant.html", {
         "job": job,
-        "applications": applications,
-    }
-    return render(request, "company/job_applicant.html", context)   
+        "applications": scored_apps
+    })
