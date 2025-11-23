@@ -5,46 +5,12 @@
 <header class="p-4 shadow-md bg-white">
     <h1 class="text-xl font-medium">Dashboard Overview</h1>
 </header>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <main class="p-6 bg-gray-100 min-h-screen overflow-y-auto">
-
-    <!-- Top Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-sm text-gray-500">Total Users</h2>
-            <p class="text-2xl font-bold mt-2">1,245</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-sm text-gray-500">Active Sessions</h2>
-            <p class="text-2xl font-bold mt-2">87</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-sm text-gray-500">New Registrations</h2>
-            <p class="text-2xl font-bold mt-2">32</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-sm text-gray-500">Total Revenue</h2>
-            <p class="text-2xl font-bold mt-2">$4,980</p>
-        </div>
+    <div class="bg-white p-6 rounded-lg shadow">
+        <canvas id="applicationsChart" height="120"></canvas>
     </div>
-
-    <!-- Sub Cards -->
-    <h2 class="text-lg font-medium mb-3">Quick Stats</h2>
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-
-        {% for i in "12345" %}
-        <div class="bg-white p-4 h-32 rounded-lg shadow flex flex-col items-center justify-center">
-            <span class="text-gray-700 font-medium">Card {{ forloop.counter }}</span>
-            <span class="text-sm text-gray-500 mt-1">Some random data</span>
-        </div>
-        {% endfor %}
-
-    </div>
-
-    <!-- Dummy Table Section -->
     <h2 class="text-lg font-medium mt-10 mb-3">Recent Activity</h2>
     <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
 
@@ -57,25 +23,63 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="border-b">
-                    <td class="p-2">John Doe</td>
-                    <td class="p-2">Logged in</td>
-                    <td class="p-2">2025-01-22</td>
+                {% if recent_applications %}
+                {% for app in recent_applications %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3">
+                        {{ app.applicant.user.first_name }} {{ app.applicant.user.last_name }}
+                        <div class="text-xs text-gray-500">
+                            {{ app.applicant.user.email }}
+                        </div>
+                    </td>
+
+                    <td class="p-3">
+                        Applied to
+                        <span class="font-semibold">{{ app.job.title }}</span>
+                    </td>
+
+                    <td class="p-3">
+                        {{ app.applied_at|date:"Y-m-d H:i" }}
+                    </td>
                 </tr>
-                <tr class="border-b">
-                    <td class="p-2">Emily Clark</td>
-                    <td class="p-2">Updated Profile</td>
-                    <td class="p-2">2025-01-21</td>
-                </tr>
+                {% endfor %}
+                {% else %}
                 <tr>
-                    <td class="p-2">Michael Smith</td>
-                    <td class="p-2">Created Order</td>
-                    <td class="p-2">2025-01-20</td>
+                    <td colspan="3" class="text-gray-500 p-4 text-center">
+                        No job applications yet.
+                    </td>
                 </tr>
+                {% endif %}
             </tbody>
+
+
         </table>
 
     </div>
 
 </main>
+<script>
+    const ctx = document.getElementById("applicationsChart").getContext("2d");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Applicants", "Pending", "Approved", "Rejected", "Jobs Posted"],
+            datasets: [{
+                label: "Count",
+                data: [24, 12, 7, 5, 14],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

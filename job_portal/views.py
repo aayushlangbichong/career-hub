@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from .models import Application
 from django.contrib.auth.decorators import login_required
+from django.db.models import Case, When, IntegerField
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -103,24 +104,15 @@ def onboarding(request):
     return render(request, "auth/onboarding.html",ctx)
 
 def dashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    company_profile = request.user.company_profile  
+    employer_jobs = JobPost.objects.filter(company=company_profile)
+    recent_applications = Application.objects.filter(
+        job__in=employer_jobs
+    ).select_related("applicant__user", "job").order_by("-applied_at")[:10]
 
-    role = get_role(request.user)
-    
-    if role != "employer":
-        messages.error(request, "Access denied.")
-        return redirect('index')
-
-    company_profile = CompanyProfile.objects.get(user=request.user)
-    job_posts = JobPost.objects.filter(company=company_profile) 
-
-    ctx = {
-        "company_profile": company_profile,
-        "job_posts": job_posts,
-        "role": role
-    }
-    return render(request, "company/dashboard.html", ctx)
+    return render(request, "company/dashboard.html", {
+        "recent_applications": recent_applications
+    })
 
 def register(request):
     if request.user.is_authenticated:
@@ -130,13 +122,14 @@ def register(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
+        email = request.POST.get("email","").strip()
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
         confirm_password = request.POST.get("confirm_password", "")
         role = request.POST.get("user_type", "")
 
        
-        if not all([first_name, last_name, username, password, confirm_password, role]):
+        if not all([first_name, last_name,email, username, password, confirm_password, role]):
             messages.error(request, "All fields are required.")
             return render(request, "auth/register.html", ctx)
 
@@ -277,6 +270,14 @@ def user_profile(request):
             ctx = {"profile": None, "role": None}
 
     return render(request, "user_profile.html", ctx)
+
+
+def view_user_profile(request, user_id, job_id):
+    user = get_object_or_404(User, id=user_id)
+    return render(request, "company/view_user_profile.html", {
+        "user": user,
+        "job_id": job_id,
+    })  
  
 def company_profile(request):
     if not request.user.is_authenticated:
@@ -323,7 +324,33 @@ def job_details(request, job_id):
 
 def search_jobs(request):
     query = request.GET.get('q', '')
-    jobs = JobPost.objects.filter(title__icontains=query) if query else JobPost.objects.all()
+    sort = request.GET.get('sort', '')
+
+    # Base Query
+    jobs = JobPost.objects.all()
+
+    # Apply search
+    if query:
+        jobs = jobs.filter(
+            Q(title__icontains=query) |
+            Q(company__company_name__icontains=query)
+        )
+
+    # Apply Sorting
+    if sort == "salary":
+        jobs = jobs.order_by("-salary")  # Highest → Lowest
+
+    elif sort == "work_type":
+        jobs = jobs.order_by(
+            Case(
+                When(work_type="Remote", then=0),
+                When(work_type="On-site", then=1),
+                default=2,
+                output_field=IntegerField()
+            )
+        )
+
+    # Return partial HTML
     html = render_to_string('partials/search_results.html', {'jobs': jobs})
     return HttpResponse(html)
 

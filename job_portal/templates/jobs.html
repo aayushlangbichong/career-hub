@@ -29,12 +29,12 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex justify-between items-center mb-6">
         <div class="flex gap-4">
-            <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm">
-                <option>Sort by (default)</option>
-                <option>Sort by Salary</option>
-                <option>Sort by Location</option>
-
+            <select id="sortSelect" class="px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                <option value="">Sort by (default)</option>
+                <option value="salary">Sort by Salary</option>
+                <option value="work_type">Sort by Work Type</option>
             </select>
+
 
         </div>
     </div>
@@ -100,6 +100,33 @@
         const query = input.value;
         performSearch(query);
     });
+
+    const sortSelect = document.getElementById('sortSelect');
+
+    function performSearch(query, sort = "") {
+        fetch(`/search/?q=${encodeURIComponent(query)}&sort=${sort}`)
+            .then(response => response.text())
+            .then(data => {
+                resultsContainer.innerHTML = data;
+            });
+    }
+
+    input.addEventListener('input', function () {
+        const query = this.value;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            performSearch(query, sortSelect.value);
+        }, delay);
+    });
+
+    button.addEventListener('click', function () {
+        performSearch(input.value, sortSelect.value);
+    });
+
+    sortSelect.addEventListener('change', function () {
+        performSearch(input.value, this.value);
+    });
+
 </script>
 
 
