@@ -14,8 +14,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from .utils.resume_parser import extract_text_from_resume
 
-
-
 def get_role(user):
     try:
         profile = JobSeekerProfile.objects.get(user=user)
@@ -90,6 +88,7 @@ def onboarding(request):
             profile = JobSeekerProfile.objects.get(user=request.user)
             profile.resume = request.FILES.get("resume")
             profile.skills = request.POST.get("skills")
+           
             profile.save()
             messages.success(request, "Job Seeker profile updated successfully!")
             return redirect('index')
@@ -97,6 +96,7 @@ def onboarding(request):
             profile = CompanyProfile.objects.get(user=request.user)
             profile.company_name = request.POST.get("company_name")
             profile.company_description = request.POST.get("company_description")
+            profile.company_location = request.POST.get("company_location")
             profile.logo = request.FILES.get("logo")
             profile.save()
             messages.success(request, "Company profile updated successfully!")
@@ -171,6 +171,7 @@ def register(request):
         user = User.objects.create_user(
             username=username,
             password=password,
+            email=email,
             first_name=first_name,
             last_name=last_name,
         )
@@ -236,6 +237,7 @@ def user_profile(request):
     if request.method == "POST":
         user.first_name = request.POST.get("first_name")
         user.last_name = request.POST.get("last_name")
+        user.email=request.POST.get("email")
         user.save()
 
         try:
@@ -274,7 +276,8 @@ def user_profile(request):
 
 def view_user_profile(request, user_id, job_id):
     user = get_object_or_404(User, id=user_id)
-    return render(request, "company/view_user_profile.html", {
+    return render(request, "company/view_user_profile.html", 
+    {
         "user": user,
         "job_id": job_id,
     })  
@@ -325,20 +328,16 @@ def job_details(request, job_id):
 def search_jobs(request):
     query = request.GET.get('q', '')
     sort = request.GET.get('sort', '')
-
-    # Base Query
     jobs = JobPost.objects.all()
 
-    # Apply search
     if query:
         jobs = jobs.filter(
             Q(title__icontains=query) |
             Q(company__company_name__icontains=query)
         )
 
-    # Apply Sorting
     if sort == "salary":
-        jobs = jobs.order_by("-salary")  # Highest → Lowest
+        jobs = jobs.order_by("-salary") 
 
     elif sort == "work_type":
         jobs = jobs.order_by(
@@ -349,8 +348,6 @@ def search_jobs(request):
                 output_field=IntegerField()
             )
         )
-
-    # Return partial HTML
     html = render_to_string('partials/search_results.html', {'jobs': jobs})
     return HttpResponse(html)
 

@@ -24,6 +24,14 @@
               class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
             <p class="text-red-500 text-sm mt-1 hidden" id="lastNameError">Last name is required.</p>
           </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Email</label>
+            <input type="text" name="email" id="email" placeholder="Email"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+            <p class="text-red-500 text-sm mt-1 hidden" id="emailError">Email is required.</p>
+          </div>
+
         </div>
 
         <div>
@@ -31,7 +39,7 @@
           <input type="text" name="username" id="username" placeholder="username"
             class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
           <p class="text-red-500 text-sm mt-1 hidden" id="usernameError">Username must be 4–20 characters.</p>
-        </div>     
+        </div>
 
         <div>
           <label class="block text-sm font-medium mb-1.5">Password</label>
@@ -74,7 +82,8 @@
       </form>
     </div>
 
-    <div class="hidden relative lg:flex bg-center items-center justify-center p-10 bg-cover" style="background-image: url('{% static "images/career.jpg" %}');">
+    <div class="hidden relative lg:flex bg-center items-center justify-center p-10 bg-cover"
+      style="background-image: url('{% static "images/career.jpg" %}');">
       <div class="absolute inset-0 bg-black opacity-30 z-0"></div>
       <div class="space-y-6 max-w-md z-50">
         <h2 class="text-2xl font-semibold text-indigo-600">Start Your Career Journey</h2>
@@ -92,57 +101,58 @@
 </main>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const form = document.getElementById("registerForm");
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("registerForm");
 
-  form.addEventListener("submit", function(e) {
-    let isValid = true;
+    form.addEventListener("submit", function (e) {
+      let isValid = true;
 
-    function setError(inputId, errorId, condition) {
-      const input = document.getElementById(inputId);
-      const error = document.getElementById(errorId);
-      if (condition) {
-        input.classList.remove("border-gray-300");
-        input.classList.add("border-red-500");
-        error.classList.remove("hidden");
+      function setError(inputId, errorId, condition) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        if (condition) {
+          input.classList.remove("border-gray-300");
+          input.classList.add("border-red-500");
+          error.classList.remove("hidden");
+          isValid = false;
+        } else {
+          input.classList.remove("border-red-500");
+          input.classList.add("border-gray-300");
+          error.classList.add("hidden");
+        }
+      }
+
+
+      setError("first_name", "firstNameError", document.getElementById("first_name").value.trim() === "");
+      setError("last_name", "lastNameError", document.getElementById("last_name").value.trim() === "");
+      setError("email", "emailError", document.getElementById("email").value.trim() === "");
+
+
+      const username = document.getElementById("username").value.trim();
+      setError("username", "usernameError", username.length < 4 || username.length > 20);
+
+      const password = document.getElementById("password").value;
+      const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,20}$/;
+      setError("password", "passwordError", !passwordPattern.test(password));
+
+
+      const confirmPassword = document.getElementById("confirm_password").value;
+      setError("confirm_password", "confirmPasswordError", confirmPassword !== password || confirmPassword === "");
+
+
+      const roleSelected = document.querySelector('input[name="user_type"]:checked');
+      const roleError = document.getElementById("roleError");
+      if (!roleSelected) {
+        roleError.classList.remove("hidden");
         isValid = false;
       } else {
-        input.classList.remove("border-red-500");
-        input.classList.add("border-gray-300");
-        error.classList.add("hidden");
+        roleError.classList.add("hidden");
       }
-    }
 
-    
-    setError("first_name", "firstNameError", document.getElementById("first_name").value.trim() === "");
-    setError("last_name", "lastNameError", document.getElementById("last_name").value.trim() === "");
-
-
-    const username = document.getElementById("username").value.trim();
-    setError("username", "usernameError", username.length < 4 || username.length > 20);
-
-    const password = document.getElementById("password").value;
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,20}$/;
-    setError("password", "passwordError", !passwordPattern.test(password));
-
-
-    const confirmPassword = document.getElementById("confirm_password").value;
-    setError("confirm_password", "confirmPasswordError", confirmPassword !== password || confirmPassword === "");
-
-
-    const roleSelected = document.querySelector('input[name="user_type"]:checked');
-    const roleError = document.getElementById("roleError");
-    if (!roleSelected) {
-      roleError.classList.remove("hidden");
-      isValid = false;
-    } else {
-      roleError.classList.add("hidden");
-    }
-
-    if (!isValid) {
-      e.preventDefault();
-    }
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
   });
-});
 </script>
 {% endblock content %}

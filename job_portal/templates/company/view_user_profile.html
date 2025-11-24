@@ -2,21 +2,27 @@
 
 {% block content %}
 <div class="p-6 bg-gray-100 min-h-screen">
-    <div class="bg-white shadow rounded-lg p-6 max-w-xl mx-auto">
+    <div class="bg-white shadow rounded-lg p-6 max-w-xl mx-auto flex gap-4 flex-col">
         <h2 class="text-2xl font-semibold mb-4">
-            {{ user.get_full_name }}
+            Applicant's Profile
         </h2>
-
+        <p class="text-gray-700"><strong>Applicant's full name:</strong> {{ user.get_full_name }}</p>
         <p class="text-gray-700"><strong>Email:</strong> {{ user.email }}</p>
         <p class="text-gray-700"><strong>Username:</strong> {{ user.username }}</p>
-
         {% if user.applicantprofile %}
         <p class="text-gray-700"><strong>Skills:</strong> {{ user.applicantprofile.skills }}</p>
         {% endif %}
 
-        <a href="{% url 'job_applicants' job_id %}" class="mt-4 inline-block text-blue-600 hover:underline">
-            ← Back
-        </a>
+        {% if user.job_seeker_profile and user.job_seeker_profile.resume %}
+        <p class="text-gray-700">
+            <strong>Resume:</strong>
+            <a href="{{ user.job_seeker_profile.resume.url }}" download class="text-blue-600 hover:underline">
+                Download Resume
+            </a>
+        </p>
+        {% else %}
+        <p class="text-gray-700"><strong>Resume:</strong> No resume uploaded.</p>
+        {% endif %}
 
     </div>
 </div>

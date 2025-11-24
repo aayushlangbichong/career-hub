@@ -13,30 +13,35 @@
       <div>
         <label class="block text-gray-700 font-medium mb-1">First Name</label>
         <input type="text" name="first_name" value="{{ request.user.first_name }}"
-               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
       </div>
 
       <div>
         <label class="block text-gray-700 font-medium mb-1">Last Name</label>
         <input type="text" name="last_name" value="{{ request.user.last_name }}"
-               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
       </div>
 
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Skills</label>
-          <textarea name="skills" rows="4"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >{{ profile.skills }}</textarea>
-        </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Email</label>
+        <input type="text" name="email" value="{{ request.user.email }}"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
 
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Resume</label>
-          {% if profile.resume %}
-            <p class="text-sm text-gray-600 mb-1">Current: <a href="{{ profile.resume.url }}" target="_blank" class="text-indigo-600 underline">View Resume</a></p>
-          {% endif %}
-          <input type="file" name="resume"
-            class="w-full px-4 py-2 border border-dashed border-gray-400 rounded-md" />
-        </div>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Skills</label>
+        <textarea name="skills" rows="4"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ profile.skills }}</textarea>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Resume</label>
+        {% if profile.resume %}
+        <p class="text-sm text-gray-600 mb-1">Current: <a href="{{ profile.resume.url }}" target="_blank"
+            class="text-indigo-600 underline">View Resume</a></p>
+        {% endif %}
+        <input type="file" name="resume" class="w-full px-4 py-2 border border-dashed border-gray-400 rounded-md" />
+      </div>
       <div>
         <button type="submit"
           class="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
