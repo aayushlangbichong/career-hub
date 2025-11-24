@@ -554,7 +554,6 @@ def extract_comprehensive_skills(text):
     if not text:
         return {}
     
-    # Define skill categories with importance weights
     skill_categories = {
         'core_programming': {
             'weight': 3.0,
@@ -641,14 +640,12 @@ def calculate_weighted_skill_match(job_text, resume_text):
 def calculate_enhanced_similarity(job_text, resume_text):
     """Enhanced similarity calculation with aggressive scoring"""
     
-    # Preprocess texts
     job_clean = enhanced_text_preprocessing(job_text)
     resume_clean = enhanced_text_preprocessing(resume_text)
     
     if not job_clean or not resume_clean:
         return 0.0
     
-    # 1. TF-IDF Cosine Similarity
     try:
         tfidf = TfidfVectorizer(
             stop_words='english',
@@ -677,7 +674,6 @@ def calculate_enhanced_similarity(job_text, resume_text):
     
     base_score = (cosine_sim * 0.3) + (weighted_skill_score * 0.7)
     
-    # Apply moderate boosts (toned down from aggressive version)
     if weighted_skill_score >= 0.7:
         final_score = min(base_score * 1.35, 0.95) 
     elif weighted_skill_score >= 0.5:
@@ -689,11 +685,9 @@ def calculate_enhanced_similarity(job_text, resume_text):
     else:
         final_score = base_score
     
-    # Additional boost for high word overlap (reduced)
     if word_overlap >= 0.3:
-        final_score = min(final_score * 1.08, 0.95)  # Smaller boost, cap at 95%
+        final_score = min(final_score * 1.08, 0.95)  
     
-    # Minimum score boost for any technical content
     if cosine_sim > 0.1 and weighted_skill_score > 0.1:
         final_score = max(final_score, 0.25)  
     
@@ -717,11 +711,9 @@ def view_job_applicants(request, job_id):
     for app in applications:
         resume_text = ""
 
-        # Extract resume text
         if app.applicant.resume:
             resume_text = extract_text_from_resume(app.applicant.resume)
 
-        # Append skills field if available
         if app.applicant.skills:
             resume_text += " " + app.applicant.skills
 
@@ -729,7 +721,6 @@ def view_job_applicants(request, job_id):
         print(f"Job description length: {len(job.description)}")
         print(f"Resume text length: {len(resume_text)}")
         
-        # Calculate enhanced similarity
         similarity_score = calculate_enhanced_similarity(job.description, resume_text)
         
         final_percentage = round(similarity_score * 100, 1)
@@ -740,7 +731,6 @@ def view_job_applicants(request, job_id):
             "score": final_percentage
         })
 
-    # Sort highest to lowest score
     scored_apps.sort(key=lambda x: x["score"], reverse=True)
 
     return render(request, "company/job_applicant.html", {
