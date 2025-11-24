@@ -1,141 +1,132 @@
-<div
-  class="flex h-screen flex-col relative justify-between bg-white"
->
-  <div class="px-4 py-6"> 
-    <span
-      class="grid h-10 w-32 place-content-center rounded-lg bg-blue-600 text-lg font-bold text-white"
-    >
-      {{user.company_profile.company_name}}
-    </span>
+<div class="flex h-screen flex-col relative justify-between bg-white">
+  <div class="px-4 py-6">
+    <!-- Company Logo Section - Fixed -->
+    <div class="grid h-10 w-32 place-content-center rounded-lg bg-blue-600 text-lg font-bold text-white">
+      {% if user.company_profile.logo %}
+      <img src="{{ request.user.company_profile.company_logo }}" alt="{{ user.company_profile.company_name }}"
+        class="h-10 w-32 object-contain rounded-lg">
+      {% else %}
+      <span class="text-sm">{{ user.company_profile.company_name|default:"One Accord" }}</span>
+      {% endif %}
+    </div>
 
     <ul class="mt-6 space-y-1">
       <li>
-        <a
-          href="{% url 'dashboard' %}"
-          class="block rounded-lg px-4 py-2 text-sm font-medium text-blue-600
+        <a href="{% url 'dashboard' %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-blue-600
           {% if request.path == '/dashboard/' %}
           bg-blue-500 text-white
           {% else %}
           text-gray-500 hover:bg-blue-100 hover:text-blue-600
-          {% endif %}"
-        >
-       <span class="flex gap-2 items-center"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-      </svg>
-      Dashboard</span>
+          {% endif %}">
+          <span class="flex gap-2 items-center"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            Dashboard</span>
         </a>
       </li>
 
       <li>
-        <a
-          href="{% url 'post_jobs' %}"
-          class="block rounded-lg px-4 py-2 text-sm font-medium
+        <a href="{% url 'post_jobs' %}" class="block rounded-lg px-4 py-2 text-sm font-medium
           {% if request.path == '/post_jobs/' %}
           bg-blue-500 text-white
           {% else %}
           text-gray-500 hover:bg-blue-100 hover:text-blue-600
-          {% endif %}"
-        >
-         <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-        </svg>
-        Post Jobs
-        </span>
+          {% endif %}">
+          <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+            </svg>
+            Post Jobs
+          </span>
         </a>
       </li>
 
-      <li>  <a
-        href="{% url 'manage_jobs' %}"
-        class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium
+      <li> <a href="{% url 'manage_jobs' %}" class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium
         {% if request.path == '/manage_jobs/' %}
         bg-blue-500 text-white
         {% else %}
         text-gray-500 hover:bg-blue-100 hover:text-blue-600
-        {% endif %}"
-      >
-      <span class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
-        </svg>
-          Manage Jobs
-      </span>
-      </a></li>
+        {% endif %}">
+          <span class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+            </svg>
+            Manage Jobs
+          </span>
+        </a></li>
 
-      <li>  <a
-        href="{% url 'job_list' %}"
-        class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium
+      <li> <a href="{% url 'job_list' %}" class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium
         {% if request.path == '/applicants/' %}
         bg-blue-500 text-white
         {% else %}
         text-gray-500 hover:bg-blue-100 hover:text-blue-600
-        {% endif %}"
-      >
-      <span class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-        </svg>        
-         All Applicants
-      </span>
-      </a></li>
+        {% endif %}">
+          <span class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+            </svg>
+            All Applicants
+          </span>
+        </a></li>
 
       <li>
         <details class="group [&_summary::-webkit-details-marker]:hidden">
           <summary
-            class="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-blue-100 hover:text-blue-600"
-          >
-            <span class="text-sm font-medium"><span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-            
-            Account
+            class="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-blue-100 hover:text-blue-600">
+            <span class="text-sm font-medium"><span class="flex items-center gap-2"><svg
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
 
-            <span
-              class="shrink-0 transition duration-300 group-open:-rotate-180"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </span>
+                Account
+
+                <span class="shrink-0 transition duration-300 group-open:-rotate-180">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </span>
           </summary>
 
           <ul class="mt-2 space-y-1 px-4">
             <li>
-              <a
-                href="{% url 'company_profile' %}"
-                class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-blue-100 hover:text-blue-600"
-              >
-              <span class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                </svg>
-                Details
-              </span>
-                
+              <a href="{% url 'company_profile' %}"
+                class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-blue-100 hover:text-blue-600">
+                <span class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                  Details
+                </span>
+
               </a>
             </li>
 
             <li>
-              <a
-                href="{% url 'logout' %}"
-                class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium text-gray-500 hover:bg-red-100 hover:text-red-600"
-              >
-              <span class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                
+              <a href="{% url 'logout' %}"
+                class="w-full rounded-lg block px-4 py-2 [text-align:_inherit] text-sm font-medium text-gray-500 hover:bg-red-100 hover:text-red-600">
+                <span class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+
                   Logout
-              </span>
+                </span>
               </a>
             </li>
           </ul>
@@ -146,21 +137,22 @@
 
   <div class="sticky inset-x-0 bottom-0 border-t border-gray-100">
     <a href="#" class="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
-      <img
-        alt=""
-        src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-        class="size-10 rounded-full object-cover"
-      />
+      <!-- User Profile Picture -->
+      {% if user.company_profile.logo %}
+      <img src="{{ user.company_profile.logo.url }}" alt="{{ user.company_profile.company_name }} Logo"
+        class="size-10 rounded-full object-cover" />
+      {% else %}
+      <div class="size-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+        {{ user.company_profile.company_name|default:"OA"|first }}
+      </div>
+      {% endif %}
 
       <div>
         <p class="text-xs">
           <strong class="block font-semibold text-md">{{ user.first_name }} {{ user.last_name }}</strong>
+          <span class="text-gray-500 text-xs">{{ user.company_profile.company_name|default:"Company" }}</span>
         </p>
       </div>
     </a>
   </div>
 </div>
-
-<script>
- 
-</script>

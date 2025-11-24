@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from .models import Application
 from django.contrib.auth.decorators import login_required
-from django.db.models import Case, When, IntegerField
+from django.db.models import Case, When, IntegerField,Q 
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -88,7 +88,7 @@ def onboarding(request):
             profile = JobSeekerProfile.objects.get(user=request.user)
             profile.resume = request.FILES.get("resume")
             profile.skills = request.POST.get("skills")
-           
+            profile.profile_picture = request.FILES.get("profile_picture")
             profile.save()
             messages.success(request, "Job Seeker profile updated successfully!")
             return redirect('index')
@@ -97,7 +97,7 @@ def onboarding(request):
             profile.company_name = request.POST.get("company_name")
             profile.company_description = request.POST.get("company_description")
             profile.company_location = request.POST.get("company_location")
-            profile.logo = request.FILES.get("logo")
+            profile.company_logo = request.FILES.get("company_logo")
             profile.save()
             messages.success(request, "Company profile updated successfully!")
             return redirect('dashboard')
@@ -237,7 +237,8 @@ def user_profile(request):
     if request.method == "POST":
         user.first_name = request.POST.get("first_name")
         user.last_name = request.POST.get("last_name")
-        user.email=request.POST.get("email")
+        user.email = request.POST.get("email")
+        user.profile_picture = request.POST.get("profile_picture")
         user.save()
 
         try:
@@ -276,6 +277,7 @@ def user_profile(request):
 
 def view_user_profile(request, user_id, job_id):
     user = get_object_or_404(User, id=user_id)
+    print (user.job_seeker_profile.resume.url)
     return render(request, "company/view_user_profile.html", 
     {
         "user": user,
@@ -348,6 +350,7 @@ def search_jobs(request):
                 output_field=IntegerField()
             )
         )
+    
     html = render_to_string('partials/search_results.html', {'jobs': jobs})
     return HttpResponse(html)
 
@@ -474,14 +477,11 @@ def update_application_status(request, app_id, new_status):
 def clean_text(text):
     if not text:
         return ""
-    text = text.lower()  # lowercase
-    text = re.sub(r'\d+', '', text)  # remove numbers
-    text = re.sub(r'[^\w\s]', '', text)  # remove punctuation
-    text = re.sub(r'\s+', ' ', text).strip()  # remove extra spaces
+    text = text.lower()  
+    text = re.sub(r'\d+', '', text) 
+    text = re.sub(r'\s+', ' ', text).strip()  
     return text
 
-
-# Enhanced aggressive matching algorithm for higher scores
 
 def enhanced_text_preprocessing(text):
     """Enhanced text preprocessing with better cleaning and normalization"""
@@ -490,7 +490,7 @@ def enhanced_text_preprocessing(text):
     
     text = text.lower()
     
-    # More comprehensive technology normalization
+   
     tech_mappings = {
         # JavaScript variations
         r'\bjs\b': 'javascript',
@@ -544,7 +544,6 @@ def enhanced_text_preprocessing(text):
     for pattern, replacement in tech_mappings.items():
         text = re.sub(pattern, replacement, text)
     
-    # Remove punctuation but preserve important technical characters
     text = re.sub(r'[^\w\s+#.-]', ' ', text)
     text = re.sub(r'\s+', ' ', text).strip()
     

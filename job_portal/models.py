@@ -6,6 +6,7 @@ class JobSeekerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='job_seeker_profile')
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     skills = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - Job Seeker Profile"
@@ -15,6 +16,7 @@ class CompanyProfile(models.Model):
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_description = models.TextField(blank=True, null=True)
     company_location=models.TextField(max_length=255,blank=True,null=True)
+    company_logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.company_name}"

@@ -16,8 +16,9 @@
         {% if user.job_seeker_profile and user.job_seeker_profile.resume %}
         <p class="text-gray-700">
             <strong>Resume:</strong>
-            <a href="{{ user.job_seeker_profile.resume.url }}" download class="text-blue-600 hover:underline">
-                Download Resume
+            <a href="{{ user.job_seeker_profile.resume.url }}" target="_blank" rel="noopener noreferrer"
+                class="text-blue-600 hover:underline">
+                View Resume
             </a>
         </p>
         {% else %}
@@ -25,5 +26,6 @@
         {% endif %}
 
     </div>
+
 </div>
 {% endblock %}
